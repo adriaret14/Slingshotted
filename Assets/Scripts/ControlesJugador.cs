@@ -21,6 +21,11 @@ public class ControlesJugador : MonoBehaviour {
 
         PlayerMoving = false;
         //Movimiento ejes
+
+        anim.SetFloat("DirY", 0);
+        anim.SetFloat("DirX", 0);
+
+
         if (Input.GetKey(KeyCode.W))
         {
             GetComponent<Rigidbody2D>().velocity = new Vector2(0, 1)* Speed * Time.deltaTime;
