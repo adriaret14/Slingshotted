@@ -18,13 +18,13 @@ public class ControlesJugador : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-
         PlayerMoving = false;
-        //Movimiento ejes
-
         anim.SetFloat("DirY", 0);
         anim.SetFloat("DirX", 0);
+        anim.SetFloat("SeeY", 0);
+        anim.SetFloat("SeeX", 0);
 
+        //Movimiento ejes
 
         if (Input.GetKey(KeyCode.W))
         {
@@ -59,12 +59,7 @@ public class ControlesJugador : MonoBehaviour {
             lastMove = new Vector2(-1, 0);
         }
 
-        anim.SetBool("SeMueve", PlayerMoving);
-        anim.SetFloat("LastX", lastMove.x);
-        anim.SetFloat("LastY", lastMove.y);
-
-
-        //DIagonales
+        //Movimiento en diagonales
         if ((Input.GetKey(KeyCode.W)) && (Input.GetKey(KeyCode.A)))
         {
             GetComponent<Rigidbody2D>().velocity = new Vector2(-1, 1) * Speed * Time.deltaTime;
@@ -81,6 +76,33 @@ public class ControlesJugador : MonoBehaviour {
         {
             GetComponent<Rigidbody2D>().velocity = new Vector2(1, -1) * Speed * Time.deltaTime;
         }
+
+        //Vista estatica
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            anim.SetFloat("SeeY", 10);
+        }
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            anim.SetFloat("SeeY", -10);
+        }
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            anim.SetFloat("SeeX", -10);
+        }
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            anim.SetFloat("SeeX", 10);
+        }
+
+
+
+
+
+
+        anim.SetBool("SeMueve", PlayerMoving);
+        anim.SetFloat("LastX", lastMove.x);
+        anim.SetFloat("LastY", lastMove.y);   
 
         if ((!Input.GetKey(KeyCode.W)) && (!Input.GetKey(KeyCode.S)) && (!Input.GetKey(KeyCode.A)) && (!Input.GetKey(KeyCode.D)))
         {
