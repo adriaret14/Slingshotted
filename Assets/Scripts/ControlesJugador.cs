@@ -21,8 +21,6 @@ public class ControlesJugador : MonoBehaviour {
         PlayerMoving = false;
         anim.SetFloat("DirY", 0);
         anim.SetFloat("DirX", 0);
-        anim.SetFloat("SeeY", 0);
-        anim.SetFloat("SeeX", 0);
 
         //Movimiento ejes
 
@@ -76,28 +74,6 @@ public class ControlesJugador : MonoBehaviour {
         {
             GetComponent<Rigidbody2D>().velocity = new Vector2(1, -1) * Speed * Time.deltaTime;
         }
-
-        //Vista estatica
-        if (Input.GetKey(KeyCode.UpArrow))
-        {
-            anim.SetFloat("SeeY", 10);
-        }
-        if (Input.GetKey(KeyCode.DownArrow))
-        {
-            anim.SetFloat("SeeY", -10);
-        }
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            anim.SetFloat("SeeX", -10);
-        }
-        if (Input.GetKey(KeyCode.RightArrow))
-        {
-            anim.SetFloat("SeeX", 10);
-        }
-
-
-
-
 
 
         anim.SetBool("SeMueve", PlayerMoving);
