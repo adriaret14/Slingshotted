@@ -1,7 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2015
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slingshotted.CSharp", "Slingshotted.CSharp.csproj", "{E87190A9-EA86-D607-B483-EBF01055943D}"
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slingshotted", "Assembly-CSharp.csproj", "{9E95757B-5F09-CBA2-2DB4-43C017E79599}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,12 +9,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E87190A9-EA86-D607-B483-EBF01055943D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E87190A9-EA86-D607-B483-EBF01055943D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E87190A9-EA86-D607-B483-EBF01055943D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E87190A9-EA86-D607-B483-EBF01055943D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E95757B-5F09-CBA2-2DB4-43C017E79599}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E95757B-5F09-CBA2-2DB4-43C017E79599}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E95757B-5F09-CBA2-2DB4-43C017E79599}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E95757B-5F09-CBA2-2DB4-43C017E79599}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
 	EndGlobalSection
 EndGlobal
