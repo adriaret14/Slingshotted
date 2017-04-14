@@ -19,6 +19,7 @@ public class ControlesJugador : MonoBehaviour {
     // Use this for initialization
     void Start () {
         anim = GetComponent<Animator>();
+        anim.SetInteger("LD", 1);
     }
 
     // Update is called once per frame
