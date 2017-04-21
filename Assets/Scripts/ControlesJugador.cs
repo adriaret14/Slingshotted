@@ -15,11 +15,13 @@ public class ControlesJugador : MonoBehaviour {
 
     private double timer = 0;
     private double meleeCD = 0.4f;
+    private int LLD;
 
     // Use this for initialization
     void Start () {
         anim = GetComponent<Animator>();
         anim.SetInteger("LD", 1);
+        LLD = 1;
     }
 
     // Update is called once per frame
@@ -81,12 +83,16 @@ public class ControlesJugador : MonoBehaviour {
         {
             GetComponent<Rigidbody2D>().velocity = new Vector2(1, -1) * Speed * Time.deltaTime;
         }
-    }
+
+
+            LLD = anim.GetInteger("LD");
+        }
 
 
         anim.SetBool("SeMueve", PlayerMoving);
         anim.SetFloat("LastX", lastMove.x);
-        anim.SetFloat("LastY", lastMove.y);   
+        anim.SetFloat("LastY", lastMove.y);
+         
 
         if ((!Input.GetKey(KeyCode.W)) && (!Input.GetKey(KeyCode.S)) && (!Input.GetKey(KeyCode.A)) && (!Input.GetKey(KeyCode.D)))
         {
@@ -94,6 +100,42 @@ public class ControlesJugador : MonoBehaviour {
             anim.SetFloat("DirY", 0);
             anim.SetFloat("DirX", 0);
             //anim.SetInteger("LD", 0);
+        }
+
+
+        //Mirar
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            anim.SetFloat("LastY", 1);
+            anim.SetFloat("LastX", 0);
+            anim.SetInteger("LD", 1);
+            print("Miro arriba");
+        }
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            anim.SetFloat("LastY", -1);
+            anim.SetFloat("LastX", 0);
+            anim.SetInteger("LD", 3);
+            print("Miro abajo");
+        }
+        if(Input.GetKey(KeyCode.LeftArrow))
+        {
+            anim.SetFloat("LastY", 0);
+            anim.SetFloat("LastX", -1);
+            anim.SetInteger("LD", 4);
+            print("Miro izquierda");
+        }
+        if(Input.GetKey(KeyCode.RightArrow))
+        {
+            anim.SetFloat("LastY", 0);
+            anim.SetFloat("LastX", 1);
+            anim.SetInteger("LD", 2);
+            print("Miro derecha");
+        }
+        if(!Input.GetKey(KeyCode.RightArrow) && !Input.GetKey(KeyCode.LeftArrow) && !Input.GetKey(KeyCode.DownArrow) && !Input.GetKey(KeyCode.UpArrow))
+        {
+            anim.SetInteger("LD", LLD);
+            print(LLD);
         }
 
 
