@@ -2,6 +2,7 @@
 using System.Collections;
 using System;
 using System.Timers;
+using UnityEngine.UI;
 
 public class ControlesJugador : MonoBehaviour {
 
@@ -17,11 +18,18 @@ public class ControlesJugador : MonoBehaviour {
     private double meleeCD = 0.4f;
     private int LLD;
 
+    private bool contPause=false;
+    private bool contInv = false;
+    [SerializeField]
+    private GameObject menu, inventario;
+
     // Use this for initialization
     void Start () {
         anim = GetComponent<Animator>();
         anim.SetInteger("LD", 1);
         LLD = 1;
+        menu.SetActive(contPause);
+        inventario.SetActive(contInv);
     }
 
     // Update is called once per frame
@@ -38,6 +46,7 @@ public class ControlesJugador : MonoBehaviour {
             GetComponent<Rigidbody2D>().velocity = new Vector2(0, 1) * Speed * Time.deltaTime;
             anim.SetFloat("DirY", 10);
             anim.SetInteger("LD", 1);
+            LLD = anim.GetInteger("LD");
             PlayerMoving = true;
             lastMove = new Vector2(0, 1);
         }
@@ -46,6 +55,7 @@ public class ControlesJugador : MonoBehaviour {
             GetComponent<Rigidbody2D>().velocity = new Vector2(0, -1) * Speed * Time.deltaTime;
             anim.SetFloat("DirY", -10);
             anim.SetInteger("LD", 3);
+            LLD = anim.GetInteger("LD");
             PlayerMoving = true;
             lastMove = new Vector2(0, -1);
         }
@@ -54,6 +64,7 @@ public class ControlesJugador : MonoBehaviour {
             GetComponent<Rigidbody2D>().velocity = new Vector2(1, 0) * Speed * Time.deltaTime;
             anim.SetFloat("DirX", 10);
             anim.SetInteger("LD", 2);
+            LLD = anim.GetInteger("LD");
             PlayerMoving = true;
             lastMove = new Vector2(1, 0);
         }
@@ -62,6 +73,7 @@ public class ControlesJugador : MonoBehaviour {
             GetComponent<Rigidbody2D>().velocity = new Vector2(-1, 0) * Speed * Time.deltaTime;
             anim.SetFloat("DirX", -10);
             anim.SetInteger("LD", 4);
+            LLD = anim.GetInteger("LD");
             PlayerMoving = true;
             lastMove = new Vector2(-1, 0);
         }
@@ -85,7 +97,7 @@ public class ControlesJugador : MonoBehaviour {
         }
 
 
-            LLD = anim.GetInteger("LD");
+            
         }
 
 
@@ -109,33 +121,88 @@ public class ControlesJugador : MonoBehaviour {
             anim.SetFloat("LastY", 1);
             anim.SetFloat("LastX", 0);
             anim.SetInteger("LD", 1);
-            print("Miro arriba");
+            //print("Miro arriba");
         }
         if (Input.GetKey(KeyCode.DownArrow))
         {
             anim.SetFloat("LastY", -1);
             anim.SetFloat("LastX", 0);
             anim.SetInteger("LD", 3);
-            print("Miro abajo");
+            //print("Miro abajo");
         }
         if(Input.GetKey(KeyCode.LeftArrow))
         {
             anim.SetFloat("LastY", 0);
             anim.SetFloat("LastX", -1);
             anim.SetInteger("LD", 4);
-            print("Miro izquierda");
+            //print("Miro izquierda");
         }
         if(Input.GetKey(KeyCode.RightArrow))
         {
             anim.SetFloat("LastY", 0);
             anim.SetFloat("LastX", 1);
             anim.SetInteger("LD", 2);
-            print("Miro derecha");
+            //print("Miro derecha");
         }
         if(!Input.GetKey(KeyCode.RightArrow) && !Input.GetKey(KeyCode.LeftArrow) && !Input.GetKey(KeyCode.DownArrow) && !Input.GetKey(KeyCode.UpArrow))
         {
             anim.SetInteger("LD", LLD);
-            print(LLD);
+            //print(LLD);
+        }
+
+        //Dash
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            //print("Dash!!");
+            //print(anim.GetInteger("LD"));
+            switch (anim.GetInteger("LD"))
+            {
+                case 1:
+                    GetComponent<Rigidbody2D>().velocity = new Vector2(0, 1) * 650 * Time.deltaTime;
+                    print("Dash arriba");
+                    break;
+                case 2:
+                    GetComponent<Rigidbody2D>().velocity = new Vector2(1, 0) * 650 * Time.deltaTime;
+                    print("Dash derecha");
+                    break;
+                case 3:
+                    GetComponent<Rigidbody2D>().velocity = new Vector2(0, -1) * 650 * Time.deltaTime;
+                    print("Dash abajo");
+                    break;
+                case 4:
+                    GetComponent<Rigidbody2D>().velocity = new Vector2(-1, 0) * 650 * Time.deltaTime;
+                    print("Dash izquierda");
+                    break;
+            }
+            //GetComponent<Rigidbody2D>().velocity = new Vector2(0, 1) * 650 * Time.deltaTime;
+
+        }
+
+
+        //Menu
+        if(Input.GetKey(KeyCode.Escape))
+        {
+            //print("Menu de pausa");
+            contPause = !contPause;
+            menu.SetActive(contPause);
+
+            if (contPause == true)
+            {
+                Time.timeScale = 0;
+            }
+            else
+            {
+                Time.timeScale = 1;
+            }            
+        }
+
+
+        //Inventario
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            contInv = !contInv;
+            inventario.SetActive(contInv);
+
         }
 
 
