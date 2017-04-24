@@ -17,6 +17,16 @@ public class ControlesJugador : MonoBehaviour {
     private double timer = 0;
     private double meleeCD = 0.4f;
     private int LLD;
+    //Collider de ataque del jugador
+    private BoxCollider2D attackArea;
+    //Offset base del collider de ataque
+    private Vector2 attackOrigin;
+    //Direccion en la que ataca el jugador
+    private int attackDirection;
+    //Distancia a la que el jugador ataca
+    public float meleeAttackRange = 0.19f;
+    //Enemigos
+    public GameObject enemy1;            
 
     private bool contPause=false;
     private bool contInv = false;
@@ -30,6 +40,8 @@ public class ControlesJugador : MonoBehaviour {
         LLD = 1;
         menu.SetActive(contPause);
         inventario.SetActive(contInv);
+        attackArea = GetComponent<BoxCollider2D>();
+        attackOrigin = attackArea.offset;
     }
 
     // Update is called once per frame
@@ -81,19 +93,19 @@ public class ControlesJugador : MonoBehaviour {
         //Movimiento en diagonales
         if ((Input.GetKey(KeyCode.W)) && (Input.GetKey(KeyCode.A)))
         {
-            GetComponent<Rigidbody2D>().velocity = new Vector2(-1, 1) * Speed * Time.deltaTime;
+            GetComponent<Rigidbody2D>().velocity = new Vector2(-1, 1).normalized * Speed * Time.deltaTime;
         }
         if ((Input.GetKey(KeyCode.W)) && (Input.GetKey(KeyCode.D)))
         {
-            GetComponent<Rigidbody2D>().velocity = new Vector2(1, 1) * Speed * Time.deltaTime;
+            GetComponent<Rigidbody2D>().velocity = new Vector2(1, 1).normalized * Speed * Time.deltaTime;
         }
         if ((Input.GetKey(KeyCode.S)) && (Input.GetKey(KeyCode.A)))
         {
-            GetComponent<Rigidbody2D>().velocity = new Vector2(-1, -1) * Speed * Time.deltaTime;
+            GetComponent<Rigidbody2D>().velocity = new Vector2(-1, -1).normalized * Speed * Time.deltaTime;
         }
         if ((Input.GetKey(KeyCode.S)) && (Input.GetKey(KeyCode.D)))
         {
-            GetComponent<Rigidbody2D>().velocity = new Vector2(1, -1) * Speed * Time.deltaTime;
+            GetComponent<Rigidbody2D>().velocity = new Vector2(1, -1).normalized * Speed * Time.deltaTime;
         }
 
 
@@ -165,19 +177,19 @@ public class ControlesJugador : MonoBehaviour {
             {
                 case 1:
                     GetComponent<Rigidbody2D>().velocity = new Vector2(0, 1) * 650 * Time.deltaTime;
-                    print("Dash arriba");
+                    Debug.Log("Dash arriba");
                     break;
                 case 2:
                     GetComponent<Rigidbody2D>().velocity = new Vector2(1, 0) * 650 * Time.deltaTime;
-                    print("Dash derecha");
+                    Debug.Log("Dash derecha");
                     break;
                 case 3:
                     GetComponent<Rigidbody2D>().velocity = new Vector2(0, -1) * 650 * Time.deltaTime;
-                    print("Dash abajo");
+                    Debug.Log("Dash abajo");
                     break;
                 case 4:
                     GetComponent<Rigidbody2D>().velocity = new Vector2(-1, 0) * 650 * Time.deltaTime;
-                    print("Dash izquierda");
+                    Debug.Log("Dash izquierda");
                     break;
             }
             //GetComponent<Rigidbody2D>().velocity = new Vector2(0, 1) * 650 * Time.deltaTime;
@@ -220,7 +232,42 @@ public class ControlesJugador : MonoBehaviour {
             GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0) * Speed * Time.deltaTime;
             canMove = false;
             timer = meleeCD;
-         }
+            attackArea.offset = attackOrigin;
+            attackDirection = anim.GetInteger("LD");
+            switch (attackDirection)
+            {
+                case 4:
+                    {
+                        attackArea.offset += new Vector2(-meleeAttackRange, 0);
+                        break;
+                    }
+                case 2:
+                    {
+                        attackArea.offset += new Vector2(meleeAttackRange, 0);
+                        break;
+                    }
+                case 1:
+                    {
+                        attackArea.offset += new Vector2(0, meleeAttackRange);
+                        break;
+                    }
+                case 3:
+                    {
+                        attackArea.offset += new Vector2(0, -meleeAttackRange);
+                        break;
+                    }                    
+            }
+            if (attackArea.IsTouching(enemy1.GetComponent<CircleCollider2D>()))
+            {                
+                Vector2 dir = (transform.position - enemy1.GetComponent<Transform>().position).normalized;
+                Debug.LogWarning("ENEMY HIT");
+                enemy1.GetComponent<EnemyClass>().healthPoints -= player.GetComponent<PlayerClass>().damageMelee;
+
+                enemy1.GetComponent<Rigidbody2D>().velocity = dir*10; 
+            }
+
+        }
+
 
         if (timer > 0)
             timer -= Time.deltaTime;
@@ -230,5 +277,6 @@ public class ControlesJugador : MonoBehaviour {
             canMove = true;
             anim.SetBool("Slashing", false);
         }
+
     }
 }
