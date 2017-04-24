@@ -6,9 +6,22 @@ using Pathfinding;
 
 public class EnemyAI : MonoBehaviour
 {
+    enum EnemyState
+    {
+        IDLE,
+        ROAMING,
+        CHASING,
+        ATTACKING,
+        FLEEING,
+        DEAD
+    }
+    //the room
+    public BoxCollider2D room;
+    public bool inRoom = false;
 
     //the target
     public Transform target;
+    public CircleCollider2D targetCollider;
 
     //update rate of path
     public float updateRate = 6f;
@@ -22,17 +35,47 @@ public class EnemyAI : MonoBehaviour
 
     //ai's speed
     public float speed = 300;
+
     //forcemode
     public ForceMode2D fMode;
-    //honestly can’t remember
+
+    //Wether the ai has reached the end of the path
     [HideInInspector]
     public bool pathIsEnded = false;
 
     //the waypoint are we going to
     private int _currentWaypoint = 0;
+
     //how close to a waypoint to continue on
     public float nextWaypointDist = 3;
     public float distanceToTarget;
+
+    //The state of the ai
+    EnemyState state = EnemyState.IDLE;
+
+    //The amount of time the ai stays in IDLE state
+    public float idleTimer = 0;
+    public float idleDuration = 2f;
+
+    //Roaming timer and speed
+    public float roamingTimer = 0;
+    public float roamingDuration = 2f;
+    public float roamingSpeed = 30;
+
+    //Fleeing speed
+    public float fleeingSpeed = 350;
+
+    //The distance within the ai stops moving towards the player.
+    public float stopDistance = 0.195f;
+
+    //The distance within the ai keeps chasing if player leaves the room
+    public float engageDistance = 1.95f;
+
+
+    //hp
+    public int healthPoints = 100;
+    //hit damage to player
+    public int damage = 34;
 
     void Start()
     {
@@ -70,7 +113,95 @@ public class EnemyAI : MonoBehaviour
             _currentWaypoint = 0;
         }
     }
-    void FixedUpdate()
+    void Update()
+    {
+        //Checks if the player is in the room
+        inRoom = room.IsTouching(targetCollider);
+        //Gets the distance from the player to the ai 
+        distanceToTarget = Vector2.Distance(target.position, transform.position);
+
+        //idle timer control
+        if (idleTimer > 0)        
+            idleTimer -= Time.deltaTime;       
+
+        //Conditionals that set the ai state 
+        if (healthPoints <= 0) 
+        {
+            state = EnemyState.DEAD;
+        }
+        else if (healthPoints <= 15)
+        {
+            state = EnemyState.FLEEING;
+        }
+        else if ((distanceToTarget <= engageDistance && distanceToTarget > stopDistance) || (inRoom && distanceToTarget > stopDistance))
+        {
+            state = EnemyState.CHASING;
+        }
+        else if (distanceToTarget <= stopDistance)
+        {
+            state = EnemyState.ATTACKING;
+        }
+        else if (idleTimer <= 0)
+        {
+            state = EnemyState.ROAMING;
+        }
+        else
+        {
+            state = EnemyState.IDLE;
+        }
+
+
+        switch (state)
+        {
+            case EnemyState.IDLE:
+                {
+                    Idle();
+                    break;
+                }
+            case EnemyState.CHASING:
+                {
+                    Chasing();
+                    break;
+                }
+            case EnemyState.ROAMING:
+                {
+                    Roaming();
+                    break;
+                }
+            case EnemyState.ATTACKING:
+                {
+                    Attacking();
+                    break;
+                }
+            case EnemyState.FLEEING:
+                {
+                    Fleeing();
+                    break;
+                }
+            case EnemyState.DEAD:
+                {
+                    Destroy(gameObject);
+                    break;
+                }
+        }
+    }
+
+    private void Idle()
+    {
+        _rig2D.velocity = new Vector2(0, 0);
+    }
+    private void Roaming()
+    {
+        if (roamingTimer > 0)
+            roamingTimer -= Time.deltaTime;
+        else
+        {
+            roamingTimer = roamingDuration;
+            float angle = Random.Range(0.0f, 2 * Mathf.PI);
+            _rig2D.velocity = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle))*roamingSpeed*Time.deltaTime;
+        }
+    }
+    private void Fleeing()
     {
         if (target == null)
         {
@@ -93,13 +224,51 @@ public class EnemyAI : MonoBehaviour
             pathIsEnded = true;
             return;
         }
-
         pathIsEnded = false;
         //find direction to next waypoint
         Vector2 dir = (path.vectorPath[_currentWaypoint] - transform.position).normalized;
         //dir *= speed * Time.deltaTime;
 
-        Vector2 velocity = new Vector2(dir.x, dir.y) * speed * Time.fixedDeltaTime;
+        Vector2 velocity = new Vector2(dir.x, dir.y) * speed * Time.deltaTime;
+        _rig2D.velocity = -velocity;
+
+        float dist = Vector2.Distance(transform.position, path.vectorPath[_currentWaypoint]);
+
+        if (dist < nextWaypointDist)
+        {
+            _currentWaypoint++;
+            return;
+        }
+    }
+    private void Chasing()
+    {
+        if (target == null)
+        {
+            Debug.Log("No hay objetivo. FixedUpdate");
+            return;
+        }
+        //TODO: look at target function
+
+        if (path == null)
+        {
+            return;
+        }
+        if (_currentWaypoint >= path.vectorPath.Count)
+        {
+            if (pathIsEnded)
+            {
+                return;
+            }
+            Debug.Log("Fin del camino");
+            pathIsEnded = true;
+            return;
+        }
+        pathIsEnded = false;
+        //find direction to next waypoint
+        Vector2 dir = (path.vectorPath[_currentWaypoint] - transform.position).normalized;
+        //dir *= speed * Time.deltaTime;
+
+        Vector2 velocity = new Vector2(dir.x, dir.y) * speed * Time.deltaTime;
         _rig2D.velocity = velocity;
 
         float dist = Vector2.Distance(transform.position, path.vectorPath[_currentWaypoint]);
@@ -109,20 +278,15 @@ public class EnemyAI : MonoBehaviour
             _currentWaypoint++;
             return;
         }
-
-        
-        //move the ai
-        if (distanceToTarget <= .195f)
-        {
-            _rig2D.velocity = new Vector2(0, 0);
-        }
-        //_rig2D.AddForce(dir, fMode);
     }
-    private void Update()
+    private void Attacking()
     {
-        distanceToTarget = Vector2.Distance(target.position, transform.position);
+        //TODO: Implementar mecanica de ataque
     }
 }
+
+
+
 
 /*
 using System.Collections;
