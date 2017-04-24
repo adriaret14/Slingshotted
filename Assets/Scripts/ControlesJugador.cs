@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class ControlesJugador : MonoBehaviour {
 
-
+    public GameObject player;
     public float Speed;
 
     private Animator anim;
@@ -155,6 +155,12 @@ public class ControlesJugador : MonoBehaviour {
         {
             //print("Dash!!");
             //print(anim.GetInteger("LD"));
+
+
+            player.GetComponent<Bars>().useStamina();
+            player.GetComponent<Bars>().regenStamina();
+
+
             switch (anim.GetInteger("LD"))
             {
                 case 1:
