@@ -186,7 +186,7 @@ public class ControlesJugador : MonoBehaviour {
 
 
         //Menu
-        if(Input.GetKey(KeyCode.Escape))
+        if(Input.GetKeyDown(KeyCode.Escape))
         {
             //print("Menu de pausa");
             contPause = !contPause;
