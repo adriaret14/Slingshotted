@@ -14,8 +14,7 @@ public class InventoryManager : MonoBehaviour {
     //Inventario
     //Array de items (Tamaño maximo 16)
     public const int inventorySize = 16;
-
-    [HideInInspector]
+    
     public Item[] inventory;
 
     [HideInInspector]
@@ -33,6 +32,8 @@ public class InventoryManager : MonoBehaviour {
             Item.NONE, Item.NONE, Item.NONE, Item.NONE,
             Item.NONE, Item.NONE, Item.NONE, Item.NONE
         };
+        //Mapa item -> sprite para el inventario
+        itemSprites = new Dictionary<Item, Sprite>();
         itemSprites.Add(Item.NONE, none);
         itemSprites.Add(Item.KEY, key);       
     }
@@ -106,6 +107,7 @@ public class InventoryManager : MonoBehaviour {
                 }
                 i++;
             }
+            Debug.LogWarning("Objeto añadido al inventario." + inventory[i-1]);
         }
         else
         {

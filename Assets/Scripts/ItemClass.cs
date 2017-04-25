@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ItemClass : MonoBehaviour {
 
-    Item item;
+    public Item item;
 
 	// Use this for initialization
 	void Start () {
