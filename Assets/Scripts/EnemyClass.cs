@@ -21,6 +21,9 @@ public class EnemyClass : MonoBehaviour {
     public float regenWaitCD = 3;
     private float regenTimer = 0;
 
+    //Drop
+    public GameObject Drop;
+    public bool drops;
     // Use this for initialization
     void Start () {
 		
@@ -42,6 +45,15 @@ public class EnemyClass : MonoBehaviour {
         }
         if (healthPoints == 0)
         {
+            if (drops)
+            {
+                Instantiate<GameObject>(Drop, transform.position, transform.rotation);
+                
+                float angle = Random.Range(0.0f, 2 * Mathf.PI);
+                Vector2 dir = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * roamingSpeed * Time.deltaTime;
+                Drop.GetComponent<Rigidbody2D>().AddForce(dir);
+                
+            }
             Destroy(gameObject);
         }
         if (regenTimer > 0)
