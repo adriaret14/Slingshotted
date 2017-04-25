@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Bars : MonoBehaviour
 {
 
-
+    public GameObject player;
     public Image barra, barra2;
     public float stamina;
     public float maxStamina;
@@ -32,7 +32,7 @@ public class Bars : MonoBehaviour
         print(dmg);
         if(flag==1)
         {
-            if (barra2.GetComponent<PlayerClass>().healthPoints - dmg <= 0)
+            if (player.GetComponent<PlayerClass>().healthPoints - dmg <= 0)
             {
                 
                 barra2.rectTransform.localScale = new Vector3(0,0,0);

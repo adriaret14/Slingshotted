@@ -20,7 +20,13 @@ public class PlayerClass : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         if (healthPoints < 0)
+        {
+            //print("Estoy muerto");
             healthPoints = 0;
+            //player.GetComponent<GameOvere>().RestartLvl();
+        }
+            
+        
     }
 
     public void takeDamage(float dmg)
@@ -29,6 +35,7 @@ public class PlayerClass : MonoBehaviour {
         if (healthPoints < dmg)
         {
             healthPoints = 0;
+            player.GetComponent<GameOvere>().RestartLvl();
         }
         else
         {

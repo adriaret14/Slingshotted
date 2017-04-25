@@ -133,6 +133,7 @@
      <Compile Include="Assets\Scripts\ControlesJugador.cs" />
      <Compile Include="Assets\Scripts\EnemyAI.cs" />
      <Compile Include="Assets\Scripts\EnemyClass.cs" />
+     <Compile Include="Assets\Scripts\GameOvere.cs" />
      <Compile Include="Assets\Scripts\PlayerClass.cs" />
      <Compile Include="Assets\Scripts\PosicionMinimapa.cs" />
      <Compile Include="Assets\s.cs" />
