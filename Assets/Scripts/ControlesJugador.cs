@@ -18,13 +18,12 @@ public class ControlesJugador : MonoBehaviour {
     private double meleeCD = 0.4f;
     private int LLD;
     //Collider de ataque del jugador
+    public GameObject attackCollider;
     private BoxCollider2D attackArea;
-    //Offset base del collider de ataque
-    private Vector2 attackOrigin;
     //Direccion en la que ataca el jugador
     private int attackDirection;
     //Distancia a la que el jugador ataca
-    public float meleeAttackRange = 0.19f;
+    private float meleeAttackRange = 0.19f;
     //Enemigos
     public GameObject enemy1;            
 
@@ -40,8 +39,8 @@ public class ControlesJugador : MonoBehaviour {
         LLD = 1;
         menu.SetActive(contPause);
         inventario.SetActive(contInv);
-        attackArea = GetComponent<BoxCollider2D>();
-        attackOrigin = attackArea.offset;
+        attackArea = attackCollider.GetComponent<BoxCollider2D>();
+        attackArea.size = attackCollider.GetComponent<AttackCollider>().sizeReduced;
     }
 
     // Update is called once per frame
@@ -232,10 +231,10 @@ public class ControlesJugador : MonoBehaviour {
             GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0) * Speed * Time.deltaTime;
             canMove = false;
             timer = meleeCD;
-            attackArea.offset = attackOrigin;
             attackDirection = anim.GetInteger("LD");
+            attackArea.size = attackCollider.GetComponent<AttackCollider>().sizeFull;
             switch (attackDirection)
-            {
+            {                
                 case 4:
                     {
                         attackArea.offset += new Vector2(-meleeAttackRange, 0);
@@ -257,15 +256,7 @@ public class ControlesJugador : MonoBehaviour {
                         break;
                     }                    
             }
-            if (attackArea.IsTouching(enemy1.GetComponent<CircleCollider2D>()))
-            {                
-                Vector2 dir = (transform.position - enemy1.GetComponent<Transform>().position).normalized;
-                Debug.LogWarning("ENEMY HIT");
-                enemy1.GetComponent<EnemyClass>().healthPoints -= player.GetComponent<PlayerClass>().damageMelee;
-
-                enemy1.GetComponent<Rigidbody2D>().velocity = dir*10; 
-            }
-
+                   
         }
 
 
@@ -276,6 +267,8 @@ public class ControlesJugador : MonoBehaviour {
         {
             canMove = true;
             anim.SetBool("Slashing", false);
+            attackArea.size = attackCollider.GetComponent<AttackCollider>().sizeReduced;
+            attackArea.offset = attackCollider.GetComponent<AttackCollider>().origin;
         }
 
     }

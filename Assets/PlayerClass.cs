@@ -7,7 +7,7 @@ public class PlayerClass : MonoBehaviour {
     //Vida del jugador
     public float healthPoints = 100f;
     //Daño del jugador (melee)
-    public float damageMelee = 51;
+    public float damageMelee = 21;
     //Daño del jugador (ranged)
     public float damageRanged = 100;
 	// Use this for initialization
@@ -19,5 +19,17 @@ public class PlayerClass : MonoBehaviour {
 	void Update () {
         if (healthPoints < 0)
             healthPoints = 0;
+    }
+
+    public void takeDamage(float dmg)
+    {
+        if (healthPoints < dmg)
+        {
+            healthPoints = 0;
+        }
+        else
+        {
+            healthPoints -= dmg;
+        } 
     }
 }

@@ -74,7 +74,7 @@ public class EnemyAI : MonoBehaviour
     private float roamingDuration = 2f;
 
     //The distance within the ai stops moving towards the player.
-    public float stopDistance = 0.19f;
+    private float stopDistance = 0.19f;
 
     //The distance within the ai keeps chasing if player leaves the room
     public float engageDistance = 1.95f;
@@ -91,9 +91,12 @@ public class EnemyAI : MonoBehaviour
     private float attackCD;
     private float attackTimer = 0;
     //Collider de ataque
-    private BoxCollider2D attackArea;
+    public BoxCollider2D attackArea;
     //Center (offset) of the circlecollider2d
     private Vector2 attackOrigin;
+    //Full size of the CircleCollider2D
+    private Vector2 attackSize;
+    private Vector2 attackReduced = new Vector2(0.01f, 0.01f);
 
     void Start()
     {
@@ -101,11 +104,12 @@ public class EnemyAI : MonoBehaviour
         targetCollider = p.GetComponent<CircleCollider2D>();
         player = p.GetComponent<PlayerClass>();
         playerRig = p.GetComponent<Rigidbody2D>();
-
-        attackArea = GetComponent<BoxCollider2D>();
+        
         attackOrigin = attackArea.offset;
-        attackCD = enemy.attackCD;
+        attackSize = attackArea.size;
+        attackArea.size = attackReduced;
         enemy = GetComponent<EnemyClass>();
+        attackCD = enemy.attackCD;
         speed = enemy.speed;
         roamingSpeed = enemy.roamingSpeed;
         fleeingSpeed = enemy.fleeingSpeed;
@@ -220,7 +224,7 @@ public class EnemyAI : MonoBehaviour
         {
             roamingTimer = roamingDuration;
             float angle = Random.Range(0.0f, 2 * Mathf.PI);
-            rigid2D.velocity = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle))*roamingSpeed*Time.deltaTime;
+            rigid2D.AddForce(new Vector2(Mathf.Cos(angle), Mathf.Sin(angle))*roamingSpeed*Time.deltaTime, fMode);
         }
     }
     private void Fleeing()
@@ -252,7 +256,7 @@ public class EnemyAI : MonoBehaviour
         //dir *= speed * Time.deltaTime;
 
         Vector2 velocity = new Vector2(dir.x, dir.y) * speed * Time.deltaTime;
-        rigid2D.velocity = -velocity;
+        rigid2D.AddForce(-velocity, fMode);
 
         float dist = Vector2.Distance(transform.position, path.vectorPath[_currentWaypoint]);
 
@@ -291,7 +295,7 @@ public class EnemyAI : MonoBehaviour
         //dir *= speed * Time.deltaTime;
 
         Vector2 velocity = new Vector2(dir.x, dir.y) * speed * Time.deltaTime;
-        rigid2D.velocity = velocity;
+        rigid2D.AddForce(velocity, fMode);
 
         float dist = Vector2.Distance(transform.position, path.vectorPath[_currentWaypoint]);
 
@@ -302,64 +306,59 @@ public class EnemyAI : MonoBehaviour
         }
     }
     private void Attacking()
-    {        
+    {
+        attackArea.size = attackReduced;
         attackArea.offset = attackOrigin;
 
         Vector2 dir = (target.position - transform.position).normalized;
 
-        if (dir.x < 0 && dir.x >= Mathf.Abs(dir.y))
+        if (dir.x < 0 && Mathf.Abs(dir.x) >= Mathf.Abs(dir.y))
         {
             attackDirection = Direction.LEFT;
         }
-        else if (dir.x > 0 && dir.x > Mathf.Abs(dir.y))
+        else if (dir.x > 0 && Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
         {
             attackDirection = Direction.RIGHT;
         }
-        else if (dir.y > 0 && dir.y > Mathf.Abs(dir.x))
+        else if (dir.y > 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
         {
             attackDirection = Direction.UP;
         } 
-        else if (dir.y < 0 && dir.y > Mathf.Abs(dir.x))
+        else if (dir.y < 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
         {
             attackDirection = Direction.DOWN;
-        }
-        switch (attackDirection)
-        {
-            case Direction.LEFT:
-                {
-                    attackArea.offset += new Vector2(-stopDistance, 0);
-                    break;
-                }
-            case Direction.RIGHT:
-                {
-                    attackArea.offset += new Vector2(stopDistance, 0);
-                    break;
-                }
-            case Direction.UP:
-                {
-                    attackArea.offset += new Vector2(0, stopDistance);
-                    break;
-                }
-            case Direction.DOWN:
-                {
-                    attackArea.offset += new Vector2(0, -stopDistance);
-                    break;
-                }
-        }
+        }        
         if (attackTimer > 0)
         {
             attackTimer -= Time.deltaTime;
         }
         else
         {
-            attackTimer = attackCD;
-
-            if (attackArea.IsTouching(targetCollider))
+            attackArea.size = attackSize;
+            switch (attackDirection)
             {
-                Debug.LogWarning("PLAYER HIT");
-                player.healthPoints -= enemy.damageMelee;
-                playerRig.velocity = dir;
+                case Direction.LEFT:
+                    {
+                        attackArea.offset += new Vector2(-stopDistance, 0);
+                        break;
+                    }
+                case Direction.RIGHT:
+                    {
+                        attackArea.offset += new Vector2(stopDistance, 0);
+                        break;
+                    }
+                case Direction.UP:
+                    {
+                        attackArea.offset += new Vector2(0, stopDistance);
+                        break;
+                    }
+                case Direction.DOWN:
+                    {
+                        attackArea.offset += new Vector2(0, -stopDistance);
+                        break;
+                    }
             }
+            attackTimer = attackCD;                        
         } 
     }
 }
