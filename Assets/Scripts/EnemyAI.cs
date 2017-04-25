@@ -98,6 +98,9 @@ public class EnemyAI : MonoBehaviour
     private Vector2 attackSize;
     private Vector2 attackReduced = new Vector2(0.01f, 0.01f);
 
+    //Variables de animacion
+    private Animator anim;
+
     void Start()
     {
         target = p.GetComponent<Transform>();
@@ -113,6 +116,9 @@ public class EnemyAI : MonoBehaviour
         speed = enemy.speed;
         roamingSpeed = enemy.roamingSpeed;
         fleeingSpeed = enemy.fleeingSpeed;
+
+        //Variables de animacion
+        anim = GetComponent<Animator>();
 
         seeker = GetComponent<Seeker>();
         rigid2D = GetComponent<Rigidbody2D>();
@@ -215,20 +221,66 @@ public class EnemyAI : MonoBehaviour
     private void Idle()
     {
         rigid2D.velocity = new Vector2(0, 0);
+        anim.SetBool("SeMueve", false);
+        anim.SetFloat("DirX", 0);
+        anim.SetFloat("DirY", 0);
     }
     private void Roaming()
     {
         if (roamingTimer > 0)
+        {            
             roamingTimer -= Time.deltaTime;
+            if (roamingTimer <= 1)
+            {
+                anim.SetBool("SeMueve", false);
+                anim.SetFloat("DirX", 0);
+                anim.SetFloat("DirY", 0);
+            }
+        }
         else
         {
+            anim.SetBool("SeMueve", true);
             roamingTimer = roamingDuration;
             float angle = Random.Range(0.0f, 2 * Mathf.PI);
-            rigid2D.AddForce(new Vector2(Mathf.Cos(angle), Mathf.Sin(angle))*roamingSpeed*Time.deltaTime, fMode);
+            Vector2 dir = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * roamingSpeed * Time.deltaTime;
+            if (dir.x < 0 && Mathf.Abs(dir.x) >= Mathf.Abs(dir.y))
+            {
+                anim.SetInteger("LD", 4);
+                anim.SetFloat("DirX", -1);
+                anim.SetFloat("DirY", 0);
+                anim.SetFloat("LastX", -1);
+                anim.SetFloat("LastY", 0);
+            }
+            else if (dir.x > 0 && Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+            {
+                anim.SetInteger("LD", 2);
+                anim.SetFloat("DirX", 1);
+                anim.SetFloat("DirY", 0);
+                anim.SetFloat("LastX", 1);
+                anim.SetFloat("LastY", 0);
+            }
+            else if (dir.y > 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
+            {
+                anim.SetInteger("LD", 1);
+                anim.SetFloat("DirX", 0);
+                anim.SetFloat("DirY", 1);
+                anim.SetFloat("LastX", 0);
+                anim.SetFloat("LastY", 1);
+            }
+            else if (dir.y < 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
+            {
+                anim.SetInteger("LD", 3);
+                anim.SetFloat("DirX", 0);
+                anim.SetFloat("DirY", -1);
+                anim.SetFloat("LastX", 0);
+                anim.SetFloat("LastY", -1);
+            }
+            rigid2D.AddForce(dir, fMode);
         }
     }
     private void Fleeing()
     {
+        anim.SetBool("SeMueve", true);
         if (target == null)
         {
             //Debug.Log("No hay objetivo. FixedUpdate");
@@ -252,12 +304,43 @@ public class EnemyAI : MonoBehaviour
         }
         pathIsEnded = false;
         //find direction to next waypoint
-        Vector2 dir = (path.vectorPath[_currentWaypoint] - transform.position).normalized;
+        Vector2 direction = (path.vectorPath[_currentWaypoint] - transform.position).normalized;
         //dir *= speed * Time.deltaTime;
 
-        Vector2 velocity = new Vector2(dir.x, dir.y) * speed * Time.deltaTime;
-        rigid2D.AddForce(-velocity, fMode);
-
+        Vector2 dir = new Vector2(direction.x, direction.y) * speed * Time.deltaTime * -1;
+        rigid2D.AddForce(dir, fMode);
+        if (dir.x < 0 && Mathf.Abs(dir.x) >= Mathf.Abs(dir.y))
+        {
+            anim.SetInteger("LD", 4);
+            anim.SetFloat("DirX", -1);
+            anim.SetFloat("DirY", 0);
+            anim.SetFloat("LastX", -1);
+            anim.SetFloat("LastY", 0);
+        }
+        else if (dir.x > 0 && Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+        {
+            anim.SetInteger("LD", 2);
+            anim.SetFloat("DirX", 1);
+            anim.SetFloat("DirY", 0);
+            anim.SetFloat("LastX", 1);
+            anim.SetFloat("LastY", 0);
+        }
+        else if (dir.y > 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
+        {
+            anim.SetInteger("LD", 1);
+            anim.SetFloat("DirX", 0);
+            anim.SetFloat("DirY", 1);
+            anim.SetFloat("LastX", 0);
+            anim.SetFloat("LastY", 1);
+        }
+        else if (dir.y < 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
+        {
+            anim.SetInteger("LD", 3);
+            anim.SetFloat("DirX", 0);
+            anim.SetFloat("DirY", -1);
+            anim.SetFloat("LastX", 0);
+            anim.SetFloat("LastY", -1);
+        }
         float dist = Vector2.Distance(transform.position, path.vectorPath[_currentWaypoint]);
 
         if (dist < nextWaypointDist)
@@ -268,6 +351,7 @@ public class EnemyAI : MonoBehaviour
     }
     private void Chasing()
     {
+        anim.SetBool("SeMueve", true);
         if (target == null)
         {
             //Debug.Log("No hay objetivo. FixedUpdate");
@@ -291,11 +375,44 @@ public class EnemyAI : MonoBehaviour
         }
         pathIsEnded = false;
         //find direction to next waypoint
-        Vector2 dir = (path.vectorPath[_currentWaypoint] - transform.position).normalized;
+        Vector2 direction = (path.vectorPath[_currentWaypoint] - transform.position).normalized;
         //dir *= speed * Time.deltaTime;
 
-        Vector2 velocity = new Vector2(dir.x, dir.y) * speed * Time.deltaTime;
-        rigid2D.AddForce(velocity, fMode);
+        Vector2 dir = new Vector2(direction.x, direction.y) * speed * Time.deltaTime;
+        rigid2D.AddForce(dir, fMode);
+        
+        if (dir.x < 0 && Mathf.Abs(dir.x) >= Mathf.Abs(dir.y))
+        {
+            anim.SetInteger("LD", 4);
+            anim.SetFloat("DirX", -1);
+            anim.SetFloat("DirY", 0);
+            anim.SetFloat("LastX", -1);
+            anim.SetFloat("LastY", 0);
+        }
+        else if (dir.x > 0 && Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+        {
+            anim.SetInteger("LD", 2);
+            anim.SetFloat("DirX", 1);
+            anim.SetFloat("DirY", 0);
+            anim.SetFloat("LastX", 1);
+            anim.SetFloat("LastY", 0);
+        }
+        else if (dir.y > 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
+        {
+            anim.SetInteger("LD", 1);
+            anim.SetFloat("DirX", 0);
+            anim.SetFloat("DirY", 1);
+            anim.SetFloat("LastX", 0);
+            anim.SetFloat("LastY", 1);
+        }
+        else if (dir.y < 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
+        {
+            anim.SetInteger("LD", 3);
+            anim.SetFloat("DirX", 0);
+            anim.SetFloat("DirY", -1);
+            anim.SetFloat("LastX", 0);
+            anim.SetFloat("LastY", -1);
+        }
 
         float dist = Vector2.Distance(transform.position, path.vectorPath[_currentWaypoint]);
 
@@ -307,6 +424,9 @@ public class EnemyAI : MonoBehaviour
     }
     private void Attacking()
     {
+        anim.SetBool("SeMueve", false);
+        anim.SetFloat("DirX", 0);
+        anim.SetFloat("DirY", 0);
         attackArea.size = attackReduced;
         attackArea.offset = attackOrigin;
 
@@ -334,31 +454,48 @@ public class EnemyAI : MonoBehaviour
         }
         else
         {
+            anim.SetBool("Slashing", true);
             attackArea.size = attackSize;
             switch (attackDirection)
             {
                 case Direction.LEFT:
                     {
+                        anim.SetInteger("LD", 4);
+                        anim.SetFloat("LastX", -1);
+                        anim.SetFloat("LastY", 0);
                         attackArea.offset += new Vector2(-stopDistance, 0);
                         break;
                     }
                 case Direction.RIGHT:
                     {
+                        anim.SetInteger("LD", 2);
+                        anim.SetFloat("LastX", 1);
+                        anim.SetFloat("LastY", 0);
                         attackArea.offset += new Vector2(stopDistance, 0);
                         break;
                     }
                 case Direction.UP:
                     {
+                        anim.SetInteger("LD", 1);
+                        anim.SetFloat("LastX", 0);
+                        anim.SetFloat("LastY", 1);
                         attackArea.offset += new Vector2(0, stopDistance);
                         break;
                     }
                 case Direction.DOWN:
                     {
+                        anim.SetInteger("LD", 3);
+                        anim.SetFloat("LastX", 0);
+                        anim.SetFloat("LastY", -1);
                         attackArea.offset += new Vector2(0, -stopDistance);
                         break;
                     }
             }
             attackTimer = attackCD;                        
+        }
+        if (attackTimer <= 0.4f)
+        {
+            anim.SetBool("Slashing", false);
         } 
     }
 }

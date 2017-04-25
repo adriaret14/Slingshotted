@@ -159,13 +159,13 @@
     <Compile Include="Assets\AstarPathfindingProject\Utilities\ProfileHelper.cs" />
     <Compile Include="Assets\AstarPathfindingProject\Utilities\UnityReferenceHelper.cs" />
     <Compile Include="Assets\AstarPathfindingProject\changelog.cs" />
-    <Compile Include="Assets\AttackCollider.cs" />
-    <Compile Include="Assets\EnemyAI.cs" />
-    <Compile Include="Assets\EnemyClass.cs" />
-    <Compile Include="Assets\PlayerClass.cs" />
+    <Compile Include="Assets\Scripts\AttackCollider.cs" />
     <Compile Include="Assets\Scripts\Bars.cs" />
     <Compile Include="Assets\Scripts\ControlCamara.cs" />
     <Compile Include="Assets\Scripts\ControlesJugador.cs" />
+    <Compile Include="Assets\Scripts\EnemyAI.cs" />
+    <Compile Include="Assets\Scripts\EnemyClass.cs" />
+    <Compile Include="Assets\Scripts\PlayerClass.cs" />
     <Compile Include="Assets\Scripts\PosicionMinimapa.cs" />
     <Compile Include="Assets\s.cs" />
   </ItemGroup>
