@@ -12,9 +12,10 @@ public class PlayerClass : MonoBehaviour {
     public float damageMelee = 21;
     //Daño del jugador (ranged)
     public float damageRanged = 100;
+        
 	// Use this for initialization
 	void Start () {
-		
+        
 	}
 	
 	// Update is called once per frame
@@ -41,5 +42,5 @@ public class PlayerClass : MonoBehaviour {
         {
             healthPoints -= dmg;
         } 
-    }
+    } 
 }
