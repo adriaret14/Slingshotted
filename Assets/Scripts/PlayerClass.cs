@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class PlayerClass : MonoBehaviour {
 
+    public GameObject player;
     //Vida del jugador
     public float healthPoints = 100f;
+    public float maxHealthPoints = 100;
     //Daño del jugador (melee)
     public float damageMelee = 21;
     //Daño del jugador (ranged)
@@ -23,6 +25,7 @@ public class PlayerClass : MonoBehaviour {
 
     public void takeDamage(float dmg)
     {
+        player.GetComponent<Bars>().updateHealth(dmg, 1);
         if (healthPoints < dmg)
         {
             healthPoints = 0;

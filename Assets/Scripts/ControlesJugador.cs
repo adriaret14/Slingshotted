@@ -164,40 +164,39 @@ public class ControlesJugador : MonoBehaviour {
         //Dash
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
-            //print("Dash!!");
-            //print(anim.GetInteger("LD"));
+            //print(player.GetComponent<Bars>().stamina);
+            //print(player.GetComponent<Bars>().maxStamina);
 
-
-            player.GetComponent<Bars>().useStamina();
-            player.GetComponent<Bars>().regenStamina();
-
-
-            switch (anim.GetInteger("LD"))
+            if (player.GetComponent<Bars>().getStamina())
             {
-                case 1:
-                    GetComponent<Rigidbody2D>().velocity = new Vector2(0, 1) * 650 * Time.deltaTime;
-                    Debug.Log("Dash arriba");
-                    break;
-                case 2:
-                    GetComponent<Rigidbody2D>().velocity = new Vector2(1, 0) * 650 * Time.deltaTime;
-                    Debug.Log("Dash derecha");
-                    break;
-                case 3:
-                    GetComponent<Rigidbody2D>().velocity = new Vector2(0, -1) * 650 * Time.deltaTime;
-                    Debug.Log("Dash abajo");
-                    break;
-                case 4:
-                    GetComponent<Rigidbody2D>().velocity = new Vector2(-1, 0) * 650 * Time.deltaTime;
-                    Debug.Log("Dash izquierda");
-                    break;
+                player.GetComponent<Bars>().useStamina();
+                switch (anim.GetInteger("LD"))
+                {
+                    case 1:
+                        GetComponent<Rigidbody2D>().velocity = new Vector2(0, 1) * 650 * Time.deltaTime;
+                        print("Dash arriba");
+                        break;
+                    case 2:
+                        GetComponent<Rigidbody2D>().velocity = new Vector2(1, 0) * 650 * Time.deltaTime;
+                        print("Dash derecha");
+                        break;
+                    case 3:
+                        GetComponent<Rigidbody2D>().velocity = new Vector2(0, -1) * 650 * Time.deltaTime;
+                        print("Dash abajo");
+                        break;
+                    case 4:
+                        GetComponent<Rigidbody2D>().velocity = new Vector2(-1, 0) * 650 * Time.deltaTime;
+                        print("Dash izquierda");
+                        break;
+                }
+
             }
-            //GetComponent<Rigidbody2D>().velocity = new Vector2(0, 1) * 650 * Time.deltaTime;
 
         }
 
 
         //Menu
-        if(Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             //print("Menu de pausa");
             contPause = !contPause;

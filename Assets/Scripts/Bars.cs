@@ -3,17 +3,59 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Bars : MonoBehaviour {
+public class Bars : MonoBehaviour
+{
 
 
-    public Image barra;
+    public Image barra, barra2;
+    public float stamina;
+    public float maxStamina;
+    public bool needStamina = false;
 
-	public void useStamina()
+    public bool getStamina()
+    {
+        return (stamina >= maxStamina);
+    }
+
+    public void useStamina()
     {
         barra.rectTransform.localScale += new Vector3(-1, 0, 0);
+        stamina = 0;
     }
-    public void regenStamina()
+    public void chargeStamina(float energy)
     {
-        barra.rectTransform.localScale = new Vector3(0.2F, 0, 0);
+        barra.rectTransform.localScale += new Vector3(energy, 0, 0);
+    }
+    public void updateHealth(float dmg, int flag)
+    {
+        
+        print(dmg);
+        if(flag==1)
+        {
+            if (barra2.GetComponent<PlayerClass>().healthPoints - dmg <= 0)
+            {
+                
+                barra2.rectTransform.localScale = new Vector3(0,0,0);
+            }
+            else
+            {
+                barra2.rectTransform.localScale += new Vector3(-(dmg / 100), 0, 0);
+            }
+           
+        }
+    }
+
+    void Start()
+    {
+
+    }
+    void Update()
+    {
+        if (stamina < maxStamina)
+        {
+            //print("hola");
+            stamina = stamina + 0.1F;
+            chargeStamina(0.01F);
+        }
     }
 }
