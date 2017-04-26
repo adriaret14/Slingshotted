@@ -29,6 +29,7 @@ public class EnemyAI : MonoBehaviour
 
     //the room
     public BoxCollider2D room;
+    [HideInInspector]
     public bool inRoom = false;
 
     //el objetivo/jugador
@@ -281,6 +282,7 @@ public class EnemyAI : MonoBehaviour
     private void Fleeing()
     {
         anim.SetBool("SeMueve", true);
+        anim.SetBool("Slashing", false);
         if (target == null)
         {
             //Debug.Log("No hay objetivo. FixedUpdate");
@@ -352,6 +354,7 @@ public class EnemyAI : MonoBehaviour
     private void Chasing()
     {
         anim.SetBool("SeMueve", true);
+        anim.SetBool("Slashing", false);
         if (target == null)
         {
             //Debug.Log("No hay objetivo. FixedUpdate");

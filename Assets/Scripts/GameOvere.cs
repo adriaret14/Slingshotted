@@ -9,12 +9,15 @@ public class GameOvere : MonoBehaviour {
     public GameObject player;
 
     public GameObject menu;
-    public Button restart;
+    public GameObject menu2;
+    public Button restart1;
+    public Button restart2;
 
 
 	// Use this for initialization
 	void Start () {
         menu.SetActive(false);
+        menu2.SetActive(false);
 	}
 	
 	// Update is called once per frame
@@ -24,10 +27,14 @@ public class GameOvere : MonoBehaviour {
 
     public void RestartLvl()
     {
-        print("Muerteeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
         menu.SetActive(true);
-        int flag = 0;
-        restart.onClick.AddListener(RestartScene); 
+        restart1.onClick.AddListener(RestartScene);
+    }
+
+    public void RestartLvl2()
+    {
+        menu2.SetActive(true);
+        restart2.onClick.AddListener(RestartScene);
     }
 
     public void RestartScene()

@@ -218,7 +218,8 @@ public class ControlesJugador : MonoBehaviour {
         {
             contInv = !contInv;
             inventario.SetActive(contInv);
-
+            InventorySlot slot = GameObject.Find("Inventario/Contenido/Slot-1/Contenido").GetComponent<InventorySlot>();
+            slot.updateSlot();
         }
 
 
@@ -231,27 +232,30 @@ public class ControlesJugador : MonoBehaviour {
             canMove = false;
             timer = meleeCD;
             attackDirection = anim.GetInteger("LD");
-            attackArea.size = attackCollider.GetComponent<AttackCollider>().sizeFull;
             switch (attackDirection)
             {                
                 case 4:
                     {
                         attackArea.offset += new Vector2(-meleeAttackRange, 0);
+                        attackArea.size = attackCollider.GetComponent<AttackCollider>().sizeFull2Y;
                         break;
                     }
                 case 2:
                     {
                         attackArea.offset += new Vector2(meleeAttackRange, 0);
+                        attackArea.size = attackCollider.GetComponent<AttackCollider>().sizeFull2Y;
                         break;
                     }
                 case 1:
                     {
                         attackArea.offset += new Vector2(0, meleeAttackRange);
+                        attackArea.size = attackCollider.GetComponent<AttackCollider>().sizeFull2X;
                         break;
                     }
                 case 3:
                     {
                         attackArea.offset += new Vector2(0, -meleeAttackRange);
+                        attackArea.size = attackCollider.GetComponent<AttackCollider>().sizeFull2X;
                         break;
                     }                    
             }

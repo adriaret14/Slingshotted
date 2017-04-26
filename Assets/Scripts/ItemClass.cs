@@ -5,7 +5,7 @@ using UnityEngine;
 public class ItemClass : MonoBehaviour {
 
     public Item item;
-    private float pickupTimer = 4.0f;
+    private float pickupTimer = 2.0f;
 
 	// Use this for initialization
 	void Start () {

@@ -13,6 +13,10 @@ public class AttackCollider : MonoBehaviour {
     [HideInInspector]
     public Vector2 sizeReduced = new Vector2(0.01f, 0.01f);
     [HideInInspector]
+    public Vector2 sizeFull2Y = new Vector2(0.188839f, 0.188839f * 2);
+    [HideInInspector]
+    public Vector2 sizeFull2X = new Vector2(0.188839f * 2, 0.188839f);
+    [HideInInspector]
     public Vector2 origin;
     public ForceMode2D fmode;
 

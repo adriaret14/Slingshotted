@@ -128,5 +128,9 @@ public class InventoryManager : MonoBehaviour {
         return res;
     }
 
+    public int GetInventorySize()
+    {
+        return inventorySize;
+    }
 
 }

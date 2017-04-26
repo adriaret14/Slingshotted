@@ -54,6 +54,7 @@ public class EnemyClass : MonoBehaviour {
                 Drop.GetComponent<Rigidbody2D>().AddForce(dir);
                 
             }
+            GameObject.Find("FinalGate").GetComponent<GateClass>().deadCount++;
             Destroy(gameObject);
         }
         if (regenTimer > 0)
