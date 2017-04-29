@@ -12,6 +12,8 @@ public class PlayerClass : MonoBehaviour {
     public float damageMelee = 21;
     //Daño del jugador (ranged)
     public float damageRanged = 100;
+    //Tier de la armadura
+    public int armorTier = 0;
         
 	// Use this for initialization
 	void Start () {
@@ -33,6 +35,8 @@ public class PlayerClass : MonoBehaviour {
     public void takeDamage(float dmg)
     {
         player.GetComponent<Bars>().updateHealth(dmg, 1);
+        if (dmg < 0 && healthPoints - maxHealthPoints < dmg)
+            healthPoints = 100;
         if (healthPoints < dmg)
         {
             healthPoints = 0;
