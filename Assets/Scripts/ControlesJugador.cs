@@ -8,6 +8,9 @@ public class ControlesJugador : MonoBehaviour {
 
     public GameObject player;
     public float Speed;
+    public GameObject flecha;
+
+    private GameObject flechaClon;
 
     private Animator anim;
     private bool PlayerMoving;
@@ -46,14 +49,17 @@ public class ControlesJugador : MonoBehaviour {
     // Update is called once per frame
     void Update() {
 
+        //print(Input.GetAxis("PS4-VER-PAD")+"\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"+ Input.GetAxis("PS4-HOR-PAD"));
+
         PlayerMoving = false;
         anim.SetFloat("DirY", 0);
         anim.SetFloat("DirX", 0);
 
         //Movimiento ejes
-        if (canMove) { 
-        if (Input.GetKey(KeyCode.W))
+        if (canMove) {
+        if (Input.GetKey(KeyCode.W) || Input.GetAxis("PS4-VER-PAD") > 0) 
         {
+            //print("ARRIBAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
             GetComponent<Rigidbody2D>().velocity = new Vector2(0, 1) * Speed * Time.deltaTime;
             anim.SetFloat("DirY", 10);
             anim.SetInteger("LD", 1);
@@ -61,8 +67,9 @@ public class ControlesJugador : MonoBehaviour {
             PlayerMoving = true;
             lastMove = new Vector2(0, 1);
         }
-        if (Input.GetKey(KeyCode.S))
+        if (Input.GetKey(KeyCode.S) || Input.GetAxis("PS4-VER-PAD") < 0)
         {
+            //print("ABAJOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
             GetComponent<Rigidbody2D>().velocity = new Vector2(0, -1) * Speed * Time.deltaTime;
             anim.SetFloat("DirY", -10);
             anim.SetInteger("LD", 3);
@@ -70,8 +77,9 @@ public class ControlesJugador : MonoBehaviour {
             PlayerMoving = true;
             lastMove = new Vector2(0, -1);
         }
-        if (Input.GetKey(KeyCode.D))
+        if (Input.GetKey(KeyCode.D) || Input.GetAxis("PS4-HOR-PAD") > 0)
         {
+            //print("DERECHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
             GetComponent<Rigidbody2D>().velocity = new Vector2(1, 0) * Speed * Time.deltaTime;
             anim.SetFloat("DirX", 10);
             anim.SetInteger("LD", 2);
@@ -79,8 +87,9 @@ public class ControlesJugador : MonoBehaviour {
             PlayerMoving = true;
             lastMove = new Vector2(1, 0);
         }
-        if (Input.GetKey(KeyCode.A))
+        if (Input.GetKey(KeyCode.A) || Input.GetAxis("PS4-HOR-PAD") < 0)
         {
+            //print("IZQUIERDAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
             GetComponent<Rigidbody2D>().velocity = new Vector2(-1, 0) * Speed * Time.deltaTime;
             anim.SetFloat("DirX", -10);
             anim.SetInteger("LD", 4);
@@ -162,7 +171,7 @@ public class ControlesJugador : MonoBehaviour {
         }
 
         //Dash
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetButton("PS4-SQR"))
         {
             //print(player.GetComponent<Bars>().stamina);
             //print(player.GetComponent<Bars>().maxStamina);
@@ -196,7 +205,7 @@ public class ControlesJugador : MonoBehaviour {
 
 
         //Menu
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetButtonDown("PS4-OPTIONS"))
         {
             //print("Menu de pausa");
             contPause = !contPause;
@@ -214,7 +223,7 @@ public class ControlesJugador : MonoBehaviour {
 
 
         //Inventario
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E) || Input.GetButtonDown("PS4-TACTILE"))
         {
             contInv = !contInv;
             inventario.SetActive(contInv);
@@ -224,7 +233,7 @@ public class ControlesJugador : MonoBehaviour {
 
 
         //Ataque
-        if (Input.GetKey(KeyCode.Space) && canMove)
+        if ((Input.GetKey(KeyCode.Space) && canMove) || Input.GetButtonDown("PS4-X"))
         {
             anim.SetBool("Slashing", true);
             PlayerMoving = false;
@@ -262,6 +271,12 @@ public class ControlesJugador : MonoBehaviour {
                    
         }
 
+        //Disparar arco
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            flechaClon = Instantiate<GameObject>(flecha, transform.position, transform.rotation);
+        }
+
 
         if (timer > 0)
             timer -= Time.deltaTime;
@@ -274,5 +289,10 @@ public class ControlesJugador : MonoBehaviour {
             attackArea.offset = attackCollider.GetComponent<AttackCollider>().origin;
         }
 
+    }
+
+    public int getLLD()
+    {
+        return LLD;
     }
 }
