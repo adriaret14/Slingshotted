@@ -12,8 +12,10 @@ public class OrbClass : MonoBehaviour {
     public ORB orbType;
 
     private float healthValue;
+    private float minHealthValue;
+    private float maxHealthValue;
 
-    private float pickupTimer = 2.5f;
+    private float pickupTimer = 1.5f;
 
     private bool pickedUp = false;
     private float pickupAnimTimer = 1.04f;
@@ -22,15 +24,16 @@ public class OrbClass : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        
+        jugador = GameObject.Find("Jugador").GetComponent<PlayerClass>();
+        minHealthValue = jugador.maxHealthPoints * 0.10f;
+        maxHealthValue = jugador.maxHealthPoints * 0.25f;
 	}
 
     void Update()
     {
         if (!started && (orbType == ORB.DEATH || orbType == ORB.LIFE))
-        {
-            jugador = GameObject.Find("Jugador").GetComponent<PlayerClass>();
-            healthValue = Random.Range(0.0f, jugador.maxHealthPoints * 0.2f);
+        {            
+            healthValue = Random.Range(minHealthValue, maxHealthValue);
             healthValue = orbType == ORB.DEATH ? healthValue : -healthValue;
             Debug.LogWarning("Orb health damage: " + healthValue);
             if (orbType == ORB.DEATH)
