@@ -39,7 +39,7 @@ public class GameOvere : MonoBehaviour {
 
     public void RestartScene()
     {
-        SceneManager.LoadScene("Proyecto Mov");
+        SceneManager.LoadScene("Map1");
     }
 }
 

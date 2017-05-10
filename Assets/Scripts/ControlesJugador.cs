@@ -57,40 +57,45 @@ public class ControlesJugador : MonoBehaviour {
 
         //Movimiento ejes
         if (canMove) {
-        if (Input.GetKey(KeyCode.W) || Input.GetAxis("PS4-VER-PAD") > 0) 
+
+        if (Input.GetKey(KeyCode.W) || Input.GetAxis("PS4-LJ-VER") < 0 || Input.GetAxis("PS4-VER-PAD") > 0) 
         {
-            //print("ARRIBAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-            GetComponent<Rigidbody2D>().velocity = new Vector2(0, 1) * Speed * Time.deltaTime;
-            anim.SetFloat("DirY", 10);
-            anim.SetInteger("LD", 1);
-            LLD = anim.GetInteger("LD");
-            PlayerMoving = true;
-            lastMove = new Vector2(0, 1);
+                
+               //Debug.Log(Input.GetAxis("PS4-LJ-VER"));
+                GetComponent<Rigidbody2D>().velocity = new Vector2(0, 1) * Speed * Time.deltaTime;
+                anim.SetFloat("DirY", 10);
+                anim.SetInteger("LD", 1);
+                LLD = anim.GetInteger("LD");
+                PlayerMoving = true;
+                lastMove = new Vector2(0, 1);
         }
-        if (Input.GetKey(KeyCode.S) || Input.GetAxis("PS4-VER-PAD") < 0)
+            if (Input.GetKey(KeyCode.S) || Input.GetAxis("PS4-LJ-VER") > 0 || Input.GetAxis("PS4-VER-PAD") < 0)
         {
-            //print("ABAJOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
-            GetComponent<Rigidbody2D>().velocity = new Vector2(0, -1) * Speed * Time.deltaTime;
+                
+                //Debug.Log(Input.GetAxis("PS4-LJ-VER"));
+                GetComponent<Rigidbody2D>().velocity = new Vector2(0, -1) * Speed * Time.deltaTime;
             anim.SetFloat("DirY", -10);
             anim.SetInteger("LD", 3);
             LLD = anim.GetInteger("LD");
             PlayerMoving = true;
             lastMove = new Vector2(0, -1);
         }
-        if (Input.GetKey(KeyCode.D) || Input.GetAxis("PS4-HOR-PAD") > 0)
+        if (Input.GetKey(KeyCode.D) || Input.GetAxis("PS4-LJ-HOR") > 0 || Input.GetAxis("PS4-HOR-PAD") > 0)
         {
-            //print("DERECHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-            GetComponent<Rigidbody2D>().velocity = new Vector2(1, 0) * Speed * Time.deltaTime;
+                
+                //Debug.Log(Input.GetAxis("PS4-VER-PAD"));
+                GetComponent<Rigidbody2D>().velocity = new Vector2(1, 0) * Speed * Time.deltaTime;
             anim.SetFloat("DirX", 10);
             anim.SetInteger("LD", 2);
             LLD = anim.GetInteger("LD");
             PlayerMoving = true;
             lastMove = new Vector2(1, 0);
         }
-        if (Input.GetKey(KeyCode.A) || Input.GetAxis("PS4-HOR-PAD") < 0)
+        if (Input.GetKey(KeyCode.A) || Input.GetAxis("PS4-LJ-HOR") < 0 || Input.GetAxis("PS4-HOR-PAD") < 0)
         {
-            //print("IZQUIERDAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-            GetComponent<Rigidbody2D>().velocity = new Vector2(-1, 0) * Speed * Time.deltaTime;
+                
+                //Debug.Log(Input.GetAxis("PS4-VER-PAD"));
+                GetComponent<Rigidbody2D>().velocity = new Vector2(-1, 0) * Speed * Time.deltaTime;
             anim.SetFloat("DirX", -10);
             anim.SetInteger("LD", 4);
             LLD = anim.GetInteger("LD");
@@ -126,7 +131,7 @@ public class ControlesJugador : MonoBehaviour {
         anim.SetFloat("LastY", lastMove.y);
          
 
-        if ((!Input.GetKey(KeyCode.W)) && (!Input.GetKey(KeyCode.S)) && (!Input.GetKey(KeyCode.A)) && (!Input.GetKey(KeyCode.D)))
+        if ((!Input.GetKey(KeyCode.W)) && (!Input.GetKey(KeyCode.S)) && (!Input.GetKey(KeyCode.A)) && (!Input.GetKey(KeyCode.D)) && (Input.GetAxis("PS4-HOR-PAD")==0) && (Input.GetAxis("PS4-VER-PAD") == 0) && (Input.GetAxis("PS4-LJ-HOR") == 0) && (Input.GetAxis("PS4-LJ-VER") == 0))
         {
             GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
             anim.SetFloat("DirY", 0);
