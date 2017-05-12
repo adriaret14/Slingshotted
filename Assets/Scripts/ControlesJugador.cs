@@ -16,6 +16,7 @@ public class ControlesJugador : MonoBehaviour {
     private bool PlayerMoving;
     private Vector2 lastMove;
     private bool canMove = true;
+    public int shootDir = 1;
 
     private double timer = 0;
     private double meleeCD = 0.4f;
@@ -48,7 +49,7 @@ public class ControlesJugador : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-
+        Debug.LogWarning(shootDir);
         //print(Input.GetAxis("PS4-VER-PAD")+"\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"+ Input.GetAxis("PS4-HOR-PAD"));
 
         PlayerMoving = false;
@@ -68,6 +69,7 @@ public class ControlesJugador : MonoBehaviour {
                 LLD = anim.GetInteger("LD");
                 PlayerMoving = true;
                 lastMove = new Vector2(0, 1);
+                shootDir = 1;
         }
             if (Input.GetKey(KeyCode.S) || Input.GetAxis("PS4-LJ-VER") > 0 || Input.GetAxis("PS4-VER-PAD") < 0)
         {
@@ -79,7 +81,8 @@ public class ControlesJugador : MonoBehaviour {
             LLD = anim.GetInteger("LD");
             PlayerMoving = true;
             lastMove = new Vector2(0, -1);
-        }
+            shootDir = 3;
+            }
         if (Input.GetKey(KeyCode.D) || Input.GetAxis("PS4-LJ-HOR") > 0 || Input.GetAxis("PS4-HOR-PAD") > 0)
         {
                 
@@ -90,7 +93,8 @@ public class ControlesJugador : MonoBehaviour {
             LLD = anim.GetInteger("LD");
             PlayerMoving = true;
             lastMove = new Vector2(1, 0);
-        }
+            shootDir = 2;
+            }
         if (Input.GetKey(KeyCode.A) || Input.GetAxis("PS4-LJ-HOR") < 0 || Input.GetAxis("PS4-HOR-PAD") < 0)
         {
                 
@@ -101,22 +105,23 @@ public class ControlesJugador : MonoBehaviour {
             LLD = anim.GetInteger("LD");
             PlayerMoving = true;
             lastMove = new Vector2(-1, 0);
-        }
+            shootDir = 4;
+            }
 
         //Movimiento en diagonales
-        if ((Input.GetKey(KeyCode.W)) && (Input.GetKey(KeyCode.A)))
+        if (((Input.GetKey(KeyCode.W)) && (Input.GetKey(KeyCode.A))) || (Input.GetAxis("PS4-LJ-VER") < 0 && Input.GetAxis("PS4-LJ-HOR") < 0) || (Input.GetAxis("PS4-VER-PAD") > 0 && Input.GetAxis("PS4-HOR-PAD") < 0))
         {
             GetComponent<Rigidbody2D>().velocity = new Vector2(-1, 1).normalized * Speed * Time.deltaTime;
         }
-        if ((Input.GetKey(KeyCode.W)) && (Input.GetKey(KeyCode.D)))
+        if (((Input.GetKey(KeyCode.W)) && (Input.GetKey(KeyCode.D))) || (Input.GetAxis("PS4-LJ-VER") < 0 && Input.GetAxis("PS4-LJ-HOR") > 0) || (Input.GetAxis("PS4-VER-PAD") > 0 && Input.GetAxis("PS4-HOR-PAD") > 0))
         {
             GetComponent<Rigidbody2D>().velocity = new Vector2(1, 1).normalized * Speed * Time.deltaTime;
         }
-        if ((Input.GetKey(KeyCode.S)) && (Input.GetKey(KeyCode.A)))
+        if (((Input.GetKey(KeyCode.S)) && (Input.GetKey(KeyCode.A))) || (Input.GetAxis("PS4-LJ-VER") > 0 && Input.GetAxis("PS4-LJ-HOR") < 0) || (Input.GetAxis("PS4-VER-PAD") < 0 && Input.GetAxis("PS4-HOR-PAD") < 0))
         {
             GetComponent<Rigidbody2D>().velocity = new Vector2(-1, -1).normalized * Speed * Time.deltaTime;
         }
-        if ((Input.GetKey(KeyCode.S)) && (Input.GetKey(KeyCode.D)))
+        if (((Input.GetKey(KeyCode.S)) && (Input.GetKey(KeyCode.D))) || (Input.GetAxis("PS4-LJ-VER") > 0 && Input.GetAxis("PS4-LJ-HOR") > 0) || (Input.GetAxis("PS4-VER-PAD") < 0 && Input.GetAxis("PS4-HOR-PAD") > 0))
         {
             GetComponent<Rigidbody2D>().velocity = new Vector2(1, -1).normalized * Speed * Time.deltaTime;
         }
@@ -141,38 +146,44 @@ public class ControlesJugador : MonoBehaviour {
 
 
         //Mirar
-        if (Input.GetKey(KeyCode.UpArrow))
+        if (Input.GetKey(KeyCode.UpArrow) || Input.GetAxis("PS4-RJ-VER") < 0)
         {
             anim.SetFloat("LastY", 1);
             anim.SetFloat("LastX", 0);
             anim.SetInteger("LD", 1);
             //print("Miro arriba");
+            shootDir = 1;
         }
-        if (Input.GetKey(KeyCode.DownArrow))
+        if (Input.GetKey(KeyCode.DownArrow) || Input.GetAxis("PS4-RJ-VER") > 0)
         {
             anim.SetFloat("LastY", -1);
             anim.SetFloat("LastX", 0);
             anim.SetInteger("LD", 3);
             //print("Miro abajo");
+            shootDir = 3;
         }
-        if(Input.GetKey(KeyCode.LeftArrow))
+        if(Input.GetKey(KeyCode.LeftArrow) || Input.GetAxis("PS4-RJ-HOR") < 0)
         {
             anim.SetFloat("LastY", 0);
             anim.SetFloat("LastX", -1);
             anim.SetInteger("LD", 4);
             //print("Miro izquierda");
+            shootDir = 4;
         }
-        if(Input.GetKey(KeyCode.RightArrow))
+        if(Input.GetKey(KeyCode.RightArrow) || Input.GetAxis("PS4-RJ-HOR") > 0)
         {
             anim.SetFloat("LastY", 0);
             anim.SetFloat("LastX", 1);
             anim.SetInteger("LD", 2);
             //print("Miro derecha");
+            shootDir = 2;
         }
-        if(!Input.GetKey(KeyCode.RightArrow) && !Input.GetKey(KeyCode.LeftArrow) && !Input.GetKey(KeyCode.DownArrow) && !Input.GetKey(KeyCode.UpArrow))
+        if(!Input.GetKey(KeyCode.RightArrow) && !Input.GetKey(KeyCode.LeftArrow) && !Input.GetKey(KeyCode.DownArrow) && !Input.GetKey(KeyCode.UpArrow) && Input.GetAxis("PS4-RJ-HOR")==0 && Input.GetAxis("PS4-RJ-VER")==0)
         {
             anim.SetInteger("LD", LLD);
             //print(LLD);
+            Debug.LogWarning(LLD);
+            shootDir = anim.GetInteger("LD");
         }
 
         //Dash
@@ -277,7 +288,7 @@ public class ControlesJugador : MonoBehaviour {
         }
 
         //Disparar arco
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q) || Input.GetButtonDown("PS4-R1"))
         {
             flechaClon = Instantiate<GameObject>(flecha, transform.position, transform.rotation);
         }

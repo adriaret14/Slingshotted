@@ -11,29 +11,29 @@ public class Arrow : MonoBehaviour {
 	void Start () {
         jugador = GameObject.Find("Jugador");
 
-        int LD = jugador.GetComponent<ControlesJugador>().getLLD();
+        int LD = jugador.GetComponent<ControlesJugador>().shootDir;
        
         switch (LD)
         {
             case 1:
                 this.gameObject.transform.Rotate(0, 0, 90);
                 v = new Vector2(0, 1);
-                print("Flecha hacia arriba");
+                print("Flecha hacia arriba    LD : "+ LD);
                 break;
             case 2:
                 //this.gameObject.transform.Rotate(0, 0, -90);
                 v = new Vector2(1, 0);
-                print("Flecha hacia derecha");
+                print("Flecha hacia derecha    LD : " + LD);
                 break;
             case 3:
                 this.gameObject.transform.Rotate(0, 0, -90);
                 v = new Vector2(0, -1);
-                print("Flecha hacia abajo");
+                print("Flecha hacia abajo    LD : " + LD);
                 break;
             case 4:
                 this.gameObject.transform.Rotate(0, 0, 180);
                 v = new Vector2(-1, 0);
-                print("Flecha hacia izquierda");
+                print("Flecha hacia izquierda    LD : " + LD);
                 break;
         }
     }
