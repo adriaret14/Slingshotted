@@ -43,13 +43,27 @@ public class EnemyClass : MonoBehaviour {
     public GameObject Drop;
     private GameObject DropClone;
     public bool drops;
+
+    //Vector unitario vertical
+    private Vector2 vertical;
     // Use this for initialization
     void Start () {
-		
-	}
+		vertical = new Vector2(0, 1);
+    }
 	
 	// Update is called once per frame
 	void Update () {
+        Vector2 EnemyToPlayer = new Vector2(GameObject.Find("Jugador").transform.position.x - transform.position.x, GameObject.Find("Jugador").transform.position.y - transform.position.y);
+
+        if (Vector2.Angle(vertical, EnemyToPlayer) > 90.0f)
+        {
+            GetComponent<SpriteRenderer>().sortingOrder = 0;
+        }
+        else if (Vector2.Angle(vertical, EnemyToPlayer) < 90.0f)
+        {
+            GetComponent<SpriteRenderer>().sortingOrder = 2;
+        }
+
         if (healthPoints < 100f)
         {
             if (regenTimer <= 0)
