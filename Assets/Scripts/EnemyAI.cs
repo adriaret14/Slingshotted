@@ -164,7 +164,11 @@ public class EnemyAI : MonoBehaviour
 
         //idle timer control
         if (idleTimer > 0)        
-            idleTimer -= Time.deltaTime;       
+            idleTimer -= Time.deltaTime;
+
+        //attack timer control
+        if (attackTimer > 0)
+            attackTimer -= Time.deltaTime;       
 
         //Conditionals that set the ai state 
         if (enemy.healthPoints <= 15)
@@ -430,73 +434,100 @@ public class EnemyAI : MonoBehaviour
         anim.SetBool("SeMueve", false);
         anim.SetFloat("DirX", 0);
         anim.SetFloat("DirY", 0);
-        attackArea.size = attackReduced;
-        attackArea.offset = attackOrigin;
-
-        Vector2 dir = (target.position - transform.position).normalized;
-
-        if (dir.x < 0 && Mathf.Abs(dir.x) >= Mathf.Abs(dir.y))
-        {
-            attackDirection = Direction.LEFT;
-        }
-        else if (dir.x > 0 && Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
-        {
-            attackDirection = Direction.RIGHT;
-        }
-        else if (dir.y > 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
-        {
-            attackDirection = Direction.UP;
-        } 
-        else if (dir.y < 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
-        {
-            attackDirection = Direction.DOWN;
-        }        
+        
         if (attackTimer > 0)
         {
-            attackTimer -= Time.deltaTime;
+            return;
         }
         else
         {
-            anim.SetBool("Slashing", true);
-            attackArea.size = attackSize;
-            switch (attackDirection)
+            Vector2 dir = (target.position - transform.position).normalized;
+            switch (enemy.tipo)
             {
-                case Direction.LEFT:
+                case ENEMY_TYPE.SKT:
+                    attackArea.size = attackReduced;
+                    attackArea.offset = attackOrigin;
+
+                    if (dir.x < 0 && Mathf.Abs(dir.x) >= Mathf.Abs(dir.y))
                     {
-                        anim.SetInteger("LD", 4);
-                        anim.SetFloat("LastX", -1);
-                        anim.SetFloat("LastY", 0);
-                        attackArea.offset += new Vector2(-stopDistance, 0);
-                        break;
+                        attackDirection = Direction.LEFT;
                     }
-                case Direction.RIGHT:
+                    else if (dir.x > 0 && Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
                     {
-                        anim.SetInteger("LD", 2);
-                        anim.SetFloat("LastX", 1);
-                        anim.SetFloat("LastY", 0);
-                        attackArea.offset += new Vector2(stopDistance, 0);
-                        break;
+                        attackDirection = Direction.RIGHT;
                     }
-                case Direction.UP:
+                    else if (dir.y > 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
                     {
-                        anim.SetInteger("LD", 1);
-                        anim.SetFloat("LastX", 0);
-                        anim.SetFloat("LastY", 1);
-                        attackArea.offset += new Vector2(0, stopDistance);
-                        break;
+                        attackDirection = Direction.UP;
                     }
-                case Direction.DOWN:
+                    else if (dir.y < 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
                     {
-                        anim.SetInteger("LD", 3);
-                        anim.SetFloat("LastX", 0);
-                        anim.SetFloat("LastY", -1);
-                        attackArea.offset += new Vector2(0, -stopDistance);
-                        break;
+                        attackDirection = Direction.DOWN;
                     }
+                    anim.SetBool("Slashing", true);
+                    attackArea.size = attackSize;
+                    switch (attackDirection)
+                    {
+                        case Direction.LEFT:
+                            {
+                                anim.SetInteger("LD", 4);
+                                anim.SetFloat("LastX", -1);
+                                anim.SetFloat("LastY", 0);
+                                attackArea.offset += new Vector2(-stopDistance, 0);
+                                break;
+                            }
+                        case Direction.RIGHT:
+                            {
+                                anim.SetInteger("LD", 2);
+                                anim.SetFloat("LastX", 1);
+                                anim.SetFloat("LastY", 0);
+                                attackArea.offset += new Vector2(stopDistance, 0);
+                                break;
+                            }
+                        case Direction.UP:
+                            {
+                                anim.SetInteger("LD", 1);
+                                anim.SetFloat("LastX", 0);
+                                anim.SetFloat("LastY", 1);
+                                attackArea.offset += new Vector2(0, stopDistance);
+                                break;
+                            }
+                        case Direction.DOWN:
+                            {
+                                anim.SetInteger("LD", 3);
+                                anim.SetFloat("LastX", 0);
+                                anim.SetFloat("LastY", -1);
+                                attackArea.offset += new Vector2(0, -stopDistance);
+                                break;
+                            }
+                    }
+                    attackTimer = attackCD;
+                    break;
+
+                case ENEMY_TYPE.ZMB:
+
+                    if (dir.x < 0 && Mathf.Abs(dir.x) >= Mathf.Abs(dir.y))
+                    {
+                        attackDirection = Direction.LEFT;
+                    }
+                    else if (dir.x > 0 && Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+                    {
+                        attackDirection = Direction.RIGHT;
+                    }
+                    else if (dir.y > 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
+                    {
+                        attackDirection = Direction.UP;
+                    }
+                    else if (dir.y < 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
+                    {
+                        attackDirection = Direction.DOWN;
+                    }
+
+                    break;
             }
-            attackTimer = attackCD;                        
+                                    
         }
-        if (attackTimer <= 0.4f)
+        if (attackTimer <= 0.4f && enemy.tipo == ENEMY_TYPE.SKT)
         {
             anim.SetBool("Slashing", false);
         } 

@@ -3,39 +3,55 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum ORB { LIFE, DEATH, NONE };
-
+public enum ENEMY_TYPE { SKT, ZMB, NIG, SPR, CON };
 public class EnemyClass : MonoBehaviour {
 
+    //Tipo de enemigo
+    public ENEMY_TYPE tipo;
     //Vida del enemigo
-    public float healthPoints = 100f;
+    public float healthPoints;
+
     //daño melee del enemigo
-    public float damageMelee = 34f;
+    public float damageMelee;
+
     //Velocidad en estado ROAMING
-    public float roamingSpeed = 11.2f;
+    public float roamingSpeed;
+
     //Velocidad en estado CHASING
-    public float speed = 1.0f/200000.0f;
+    public float speed;
+
     //Velocidad en estado FLEEING
-    public float fleeingSpeed = 350;
+    public float fleeingSpeed;
+
     //Cooldown del ataque del enemigo
     public float attackCD;
+    public float rangedAttackCD;
+    public float conjuringCD;
+
     //Regeneracion de vida por segundo
-    public float healthRegen = 10;
-    public float regenWaitCD = 3;
-    private float regenTimer = 0;
+    public float healthRegen;
+    public float regenWaitCD;
+    private float regenTimer;
+
     //Tipo de orbe que dropea y probabilidades
     public GameObject Orb;
     private GameObject OrbClone;
     private ORB orbType;
     private float deathOrbChance;
     private float lifeOrbChance;
+
     //Probabilidad de orbe perjudicial al maximo de salud (100)
     private float deathOrbMaxChance = 70.0f;
+
     //probabilidad de orbe perjudicial al minimo de salud (0)
     private float deathOrbMinChance = 5.0f;
+
     //Probabilidad de orbe beneficioso al maximo de salud (100)
     private float lifeOrbMaxChance = 0.0f;
+
     //probabilidad de orbe beneficioso al minimo de salud (0)
     private float lifeOrbMinChance = 95.0f;
+
     //jugador
     private PlayerClass jugador;
 
@@ -46,9 +62,109 @@ public class EnemyClass : MonoBehaviour {
 
     //Vector unitario vertical
     private Vector2 vertical;
+
     // Use this for initialization
     void Start () {
 		vertical = new Vector2(0, 1);
+
+        switch (tipo)
+        {
+            case ENEMY_TYPE.SKT:
+
+                healthPoints = 115f;
+                damageMelee = 12f;
+
+                roamingSpeed = 11.2f;
+                speed = 1.0f / 200000.0f;
+                fleeingSpeed = 350f;
+
+                attackCD = 0.5f;
+                rangedAttackCD = -1.0f;
+                conjuringCD = -1.0f;
+
+                healthRegen = 10f;
+                regenWaitCD = 3f;
+                regenTimer = 0f;
+
+                break;
+
+            case ENEMY_TYPE.ZMB:
+
+                healthPoints = 100f;
+                damageMelee = 12f;
+
+                roamingSpeed = 11.2f;
+                speed = 1.0f / 200000.0f;
+                fleeingSpeed = 350f;
+
+                attackCD = -1.0f;
+                rangedAttackCD = 0.0f;
+                conjuringCD = -1.0f;
+
+                healthRegen = 10f;
+                regenWaitCD = 3f;
+                regenTimer = 0f;
+
+                break;
+
+            case ENEMY_TYPE.NIG:
+
+                healthPoints = 90f;
+                damageMelee = 12f;
+
+                roamingSpeed = 10.2f;
+                speed = 1.0f / 200000.0f;
+                fleeingSpeed = 350f;
+
+                attackCD = 0.0f;
+                rangedAttackCD = -1.0f;
+                conjuringCD = 0.0f;
+
+                healthRegen = 10f;
+                regenWaitCD = 3f;
+                regenTimer = 0f;
+
+                break;
+
+            case ENEMY_TYPE.SPR:
+
+                healthPoints = 150f;
+                damageMelee = 15f;
+
+                roamingSpeed = 10.2f;
+                speed = 1.0f / 215000.0f;
+                fleeingSpeed = 320f;
+
+                attackCD = 0.0f;
+                rangedAttackCD = -1.0f;
+                conjuringCD = -1.0f;
+
+                healthRegen = 10f;
+                regenWaitCD = 3f;
+                regenTimer = 0f;
+
+                break;
+
+            case ENEMY_TYPE.CON:
+
+                healthPoints = 50f;
+                damageMelee = 7f;
+
+                roamingSpeed = 11.2f;
+                speed = 1.0f / 250000.0f;
+                fleeingSpeed = 300f;
+
+                attackCD = 0.5f;
+                rangedAttackCD = -1.0f;
+                conjuringCD = -1.0f;
+
+                healthRegen = 10f;
+                regenWaitCD = 3f;
+                regenTimer = 0f;
+
+                break;
+
+        }
     }
 	
 	// Update is called once per frame
