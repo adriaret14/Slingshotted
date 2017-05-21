@@ -505,7 +505,6 @@ public class EnemyAI : MonoBehaviour
                     break;
 
                 case ENEMY_TYPE.ZMB:
-
                     if (dir.x < 0 && Mathf.Abs(dir.x) >= Mathf.Abs(dir.y))
                     {
                         attackDirection = Direction.LEFT;
@@ -521,6 +520,53 @@ public class EnemyAI : MonoBehaviour
                     else if (dir.y < 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
                     {
                         attackDirection = Direction.DOWN;
+                    }
+                    switch (attackDirection)
+                    {
+                        case Direction.LEFT:
+                            {
+                                //anim.SetInteger("LD", 4);
+                                //anim.SetFloat("LastX", -1);
+                                //anim.SetFloat("LastY", 0);
+                                attackArea.offset += new Vector2(-5*stopDistance, 0);
+                                attackArea.size = new Vector2((2*0.095f + 10*stopDistance), 0.095f);
+                                break;
+                            }
+                        case Direction.RIGHT:
+                            {
+                                //anim.SetInteger("LD", 2);
+                                //anim.SetFloat("LastX", 1);
+                                //anim.SetFloat("LastY", 0);
+                                attackArea.offset += new Vector2(5*stopDistance, 0);
+                                attackArea.size = new Vector2((2 * 0.095f + 10 * stopDistance), 0.095f);
+                                break;
+                            }
+                        case Direction.UP:
+                            {
+                                //anim.SetInteger("LD", 1);
+                                //anim.SetFloat("LastX", 0);
+                                //anim.SetFloat("LastY", 1);
+                                attackArea.offset += new Vector2(0, 5*stopDistance);
+                                attackArea.size = new Vector2(0.095f, (2 * 0.095f + 10 * stopDistance));
+                                break;
+                            }
+                        case Direction.DOWN:
+                            {
+                                //anim.SetInteger("LD", 3);
+                                //anim.SetFloat("LastX", 0);
+                                //anim.SetFloat("LastY", -1);
+                                attackArea.offset += new Vector2(0, -5*stopDistance);
+                                attackArea.size = new Vector2(0.095f, (2 * 0.095f + 10 * stopDistance));
+                                break;
+                            }
+                    }
+                    if (/* onSight */)
+                    {
+                        //Shoot
+                    }
+                    else
+                    {
+                        
                     }
 
                     break;

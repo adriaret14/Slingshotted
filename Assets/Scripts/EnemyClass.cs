@@ -13,6 +13,7 @@ public class EnemyClass : MonoBehaviour {
 
     //daño melee del enemigo
     public float damageMelee;
+    public float damageRanged;
 
     //Velocidad en estado ROAMING
     public float roamingSpeed;
@@ -73,6 +74,7 @@ public class EnemyClass : MonoBehaviour {
 
                 healthPoints = 115f;
                 damageMelee = 12f;
+                damageRanged = 0f;
 
                 roamingSpeed = 11.2f;
                 speed = 1.0f / 200000.0f;
@@ -91,7 +93,8 @@ public class EnemyClass : MonoBehaviour {
             case ENEMY_TYPE.ZMB:
 
                 healthPoints = 100f;
-                damageMelee = 12f;
+                damageMelee = 0f;
+                damageRanged = 60f;
 
                 roamingSpeed = 11.2f;
                 speed = 1.0f / 200000.0f;
