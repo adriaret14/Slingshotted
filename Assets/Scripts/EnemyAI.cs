@@ -88,16 +88,26 @@ public class EnemyAI : MonoBehaviour
     //Direccion en la que el enemigo ataca
     [HideInInspector]
     Direction attackDirection;
+    [HideInInspector]
+    Direction movementDirection;
     //Cooldown del ataque del enemigo
     private float attackCD;
+    private float shootCD;
     private float attackTimer = 0;
     //Collider de ataque
     public BoxCollider2D attackArea;
+    public AttackCollider attackColliderScript;
     //Center (offset) of the circlecollider2d
     private Vector2 attackOrigin;
     //Full size of the CircleCollider2D
     private Vector2 attackSize;
     private Vector2 attackReduced = new Vector2(0.01f, 0.01f);
+    private Vector2 dir;
+    private Vector2 movementNormalizedVector;
+    private float speedMultiplier;
+
+    public GameObject flecha;
+    public GameObject flechaClon;
 
     //Variables de animacion
     private Animator anim;
@@ -108,6 +118,8 @@ public class EnemyAI : MonoBehaviour
         targetCollider = p.GetComponent<CircleCollider2D>();
         player = p.GetComponent<PlayerClass>();
         playerRig = p.GetComponent<Rigidbody2D>();
+
+        attackColliderScript = attackArea.GetComponent<AttackCollider>();
         
         attackOrigin = attackArea.offset;
         attackSize = attackArea.size;
@@ -163,34 +175,62 @@ public class EnemyAI : MonoBehaviour
         distanceToTarget = Vector2.Distance(target.position, transform.position);
 
         //idle timer control
-        if (idleTimer > 0)        
+        if (idleTimer > 0)
             idleTimer -= Time.deltaTime;
 
         //attack timer control
         if (attackTimer > 0)
-            attackTimer -= Time.deltaTime;       
+            attackTimer -= Time.deltaTime;
 
-        //Conditionals that set the ai state 
-        if (enemy.healthPoints <= 15)
+        //Conditionals that set the ai state
+        switch (enemy.tipo)
         {
-            state = EnemyState.FLEEING;
+            case ENEMY_TYPE.SKT:
+                if (enemy.healthPoints <= 15)
+                {
+                    state = EnemyState.FLEEING;
+                }
+                else if ((distanceToTarget <= engageDistance && distanceToTarget > stopDistance) || (inRoom && distanceToTarget > stopDistance))
+                {
+                    state = EnemyState.CHASING;
+                }
+                else if (distanceToTarget <= stopDistance)
+                {
+                    state = EnemyState.ATTACKING;
+                }
+                else if (idleTimer <= 0)
+                {
+                    state = EnemyState.ROAMING;
+                }
+                else
+                {
+                    state = EnemyState.IDLE;
+                }
+                break;
+            case ENEMY_TYPE.ZMB:
+                if (enemy.healthPoints <= 15)
+                {
+                    state = EnemyState.FLEEING;
+                }
+                else if ((distanceToTarget <= 15 * stopDistance && distanceToTarget > 11 * stopDistance) || (inRoom && distanceToTarget > 11 * stopDistance))
+                {
+                    state = EnemyState.CHASING;
+                }
+                else if (distanceToTarget <= 11 * stopDistance)
+                {
+                    state = EnemyState.ATTACKING;
+                }
+                else if (idleTimer <= 0)
+                {
+                    state = EnemyState.ROAMING;
+                }
+                else
+                {
+                    state = EnemyState.IDLE;
+                }
+                break;
         }
-        else if ((distanceToTarget <= engageDistance && distanceToTarget > stopDistance) || (inRoom && distanceToTarget > stopDistance))
-        {
-            state = EnemyState.CHASING;
-        }
-        else if (distanceToTarget <= stopDistance)
-        {
-            state = EnemyState.ATTACKING;
-        }
-        else if (idleTimer <= 0)
-        {
-            state = EnemyState.ROAMING;
-        }
-        else
-        {
-            state = EnemyState.IDLE;
-        }
+    
 
 
         switch (state)
@@ -441,7 +481,7 @@ public class EnemyAI : MonoBehaviour
         }
         else
         {
-            Vector2 dir = (target.position - transform.position).normalized;
+            dir = (target.position - transform.position).normalized;
             switch (enemy.tipo)
             {
                 case ENEMY_TYPE.SKT:
@@ -505,26 +545,52 @@ public class EnemyAI : MonoBehaviour
                     break;
 
                 case ENEMY_TYPE.ZMB:
-                    if (dir.x < 0 && Mathf.Abs(dir.x) >= Mathf.Abs(dir.y))
+                    if (dir.x < 0 && Mathf.Abs(dir.x) >= Mathf.Abs(dir.y) && dir.y >= 0)
                     {
                         attackDirection = Direction.LEFT;
+                        movementDirection = Direction.UP;
                     }
-                    else if (dir.x > 0 && Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+                    else if (dir.x < 0 && Mathf.Abs(dir.x) >= Mathf.Abs(dir.y) && dir.y < 0)
+                    {
+                        attackDirection = Direction.LEFT;
+                        movementDirection = Direction.DOWN;
+                    }
+                    else if (dir.x > 0 && Mathf.Abs(dir.x) > Mathf.Abs(dir.y) && dir.y >= 0)
                     {
                         attackDirection = Direction.RIGHT;
+                        movementDirection = Direction.UP;
                     }
-                    else if (dir.y > 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
+                    else if (dir.x > 0 && Mathf.Abs(dir.x) > Mathf.Abs(dir.y) && dir.y < 0)
+                    {
+                        attackDirection = Direction.RIGHT;
+                        movementDirection = Direction.DOWN;
+                    }
+                    else if (dir.y > 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x) && dir.x >= 0)
                     {
                         attackDirection = Direction.UP;
+                        movementDirection = Direction.RIGHT;
                     }
-                    else if (dir.y < 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
+                    else if (dir.y > 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x) && dir.x < 0)
+                    {
+                        attackDirection = Direction.UP;
+                        movementDirection = Direction.LEFT;
+                    }
+                    else if (dir.y < 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x) && dir.x >= 0)
                     {
                         attackDirection = Direction.DOWN;
+                        movementDirection = Direction.RIGHT;
                     }
+                    else if (dir.y < 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x) && dir.x < 0)
+                    {
+                        attackDirection = Direction.DOWN;
+                        movementDirection = Direction.LEFT;
+                    }
+                    speedMultiplier = map(distanceToTarget, stopDistance, 10 * stopDistance, 1, 0);
                     switch (attackDirection)
                     {
                         case Direction.LEFT:
                             {
+                                movementNormalizedVector = new Vector2((movementDirection == Direction.UP ? 1 : -1), 0);                                                                
                                 //anim.SetInteger("LD", 4);
                                 //anim.SetFloat("LastX", -1);
                                 //anim.SetFloat("LastY", 0);
@@ -534,6 +600,7 @@ public class EnemyAI : MonoBehaviour
                             }
                         case Direction.RIGHT:
                             {
+                                movementNormalizedVector = new Vector2((movementDirection == Direction.UP ? 1 : -1), 0);
                                 //anim.SetInteger("LD", 2);
                                 //anim.SetFloat("LastX", 1);
                                 //anim.SetFloat("LastY", 0);
@@ -543,6 +610,7 @@ public class EnemyAI : MonoBehaviour
                             }
                         case Direction.UP:
                             {
+                                movementNormalizedVector = new Vector2(0, (movementDirection == Direction.RIGHT ? 1 : -1));
                                 //anim.SetInteger("LD", 1);
                                 //anim.SetFloat("LastX", 0);
                                 //anim.SetFloat("LastY", 1);
@@ -552,6 +620,7 @@ public class EnemyAI : MonoBehaviour
                             }
                         case Direction.DOWN:
                             {
+                                movementNormalizedVector = new Vector2(0, (movementDirection == Direction.RIGHT ? 1 : -1));
                                 //anim.SetInteger("LD", 3);
                                 //anim.SetFloat("LastX", 0);
                                 //anim.SetFloat("LastY", -1);
@@ -560,15 +629,14 @@ public class EnemyAI : MonoBehaviour
                                 break;
                             }
                     }
-                    if (/* onSight */)
+                    rigid2D.velocity = speedMultiplier * speed * 10 * -dir + speed * 10 * (1 - speedMultiplier) * movementNormalizedVector;
+                    if (attackColliderScript.canShoot)
                     {
+                        rigid2D.velocity = new Vector2(0, 0);
+                        attackTimer = shootCD;
+                        flechaClon = Instantiate<GameObject>(flecha, transform.position, transform.rotation);
                         //Shoot
                     }
-                    else
-                    {
-                        
-                    }
-
                     break;
             }
                                     
@@ -577,5 +645,10 @@ public class EnemyAI : MonoBehaviour
         {
             anim.SetBool("Slashing", false);
         } 
+    }
+
+    public float map(float x, float in_min, float in_max, float out_on_min, float out_on_max)
+    {
+        return (x - in_min) * (out_on_max - out_on_min) / (in_max - in_min) + out_on_min;
     }
 }

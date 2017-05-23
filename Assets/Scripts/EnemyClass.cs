@@ -76,9 +76,9 @@ public class EnemyClass : MonoBehaviour {
                 damageMelee = 12f;
                 damageRanged = 0f;
 
-                roamingSpeed = 11.2f;
-                speed = 1.0f / 200000.0f;
-                fleeingSpeed = 350f;
+                roamingSpeed = 0.112f;
+                speed = 0.05f;
+                fleeingSpeed = 0.112f;
 
                 attackCD = 0.5f;
                 rangedAttackCD = -1.0f;
@@ -96,9 +96,9 @@ public class EnemyClass : MonoBehaviour {
                 damageMelee = 0f;
                 damageRanged = 60f;
 
-                roamingSpeed = 11.2f;
-                speed = 1.0f / 200000.0f;
-                fleeingSpeed = 350f;
+                roamingSpeed = 0.112f;
+                speed = 0.05f;
+                fleeingSpeed = 0.112f;
 
                 attackCD = -1.0f;
                 rangedAttackCD = 0.0f;
@@ -115,9 +115,9 @@ public class EnemyClass : MonoBehaviour {
                 healthPoints = 90f;
                 damageMelee = 12f;
 
-                roamingSpeed = 10.2f;
-                speed = 1.0f / 200000.0f;
-                fleeingSpeed = 350f;
+                roamingSpeed = 0.102f;
+                speed = 0.05f;
+                fleeingSpeed = 0.102f;
 
                 attackCD = 0.0f;
                 rangedAttackCD = -1.0f;
@@ -134,9 +134,9 @@ public class EnemyClass : MonoBehaviour {
                 healthPoints = 150f;
                 damageMelee = 15f;
 
-                roamingSpeed = 10.2f;
-                speed = 1.0f / 215000.0f;
-                fleeingSpeed = 320f;
+                roamingSpeed = 0.102f;
+                speed = 0.04f;
+                fleeingSpeed = 0.102f;
 
                 attackCD = 0.0f;
                 rangedAttackCD = -1.0f;
@@ -153,9 +153,9 @@ public class EnemyClass : MonoBehaviour {
                 healthPoints = 50f;
                 damageMelee = 7f;
 
-                roamingSpeed = 11.2f;
-                speed = 1.0f / 250000.0f;
-                fleeingSpeed = 300f;
+                roamingSpeed = 0.112f;
+                speed = 0.03f;
+                fleeingSpeed = 0.112f;
 
                 attackCD = 0.5f;
                 rangedAttackCD = -1.0f;

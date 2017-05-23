@@ -63,6 +63,25 @@ public class AttackCollider : MonoBehaviour
                 }
                 break;
             case (COLLIDERMODE.DETECT):
+                if (collider.gameObject.GetComponent<PlayerClass>() != null)
+                {
+                    canShoot = true;
+                }
+                break;
+        }
+    }
+
+    public void OnTriggerExit2D(Collider2D collider)
+    {
+        switch (cmode)
+        {
+            case (COLLIDERMODE.HURT):                
+                break;
+            case (COLLIDERMODE.DETECT):
+                if (collider.gameObject.GetComponent<PlayerClass>() != null)
+                {
+                    canShoot = false;
+                }
                 break;
         }
     }
