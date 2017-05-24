@@ -555,32 +555,32 @@ public class EnemyAI : MonoBehaviour
                         attackDirection = Direction.LEFT;
                         movementDirection = Direction.DOWN;
                     }
-                    else if (dir.x > 0 && Mathf.Abs(dir.x) > Mathf.Abs(dir.y) && dir.y >= 0)
+                    else if (dir.x > 0 && Mathf.Abs(dir.x) >= Mathf.Abs(dir.y) && dir.y >= 0)
                     {
                         attackDirection = Direction.RIGHT;
                         movementDirection = Direction.UP;
                     }
-                    else if (dir.x > 0 && Mathf.Abs(dir.x) > Mathf.Abs(dir.y) && dir.y < 0)
+                    else if (dir.x > 0 && Mathf.Abs(dir.x) >= Mathf.Abs(dir.y) && dir.y < 0)
                     {
                         attackDirection = Direction.RIGHT;
                         movementDirection = Direction.DOWN;
                     }
-                    else if (dir.y > 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x) && dir.x >= 0)
+                    else if (dir.y > 0 && Mathf.Abs(dir.y) >= Mathf.Abs(dir.x) && dir.x >= 0)
                     {
                         attackDirection = Direction.UP;
                         movementDirection = Direction.RIGHT;
                     }
-                    else if (dir.y > 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x) && dir.x < 0)
+                    else if (dir.y > 0 && Mathf.Abs(dir.y) >= Mathf.Abs(dir.x) && dir.x < 0)
                     {
                         attackDirection = Direction.UP;
                         movementDirection = Direction.LEFT;
                     }
-                    else if (dir.y < 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x) && dir.x >= 0)
+                    else if (dir.y < 0 && Mathf.Abs(dir.y) >= Mathf.Abs(dir.x) && dir.x >= 0)
                     {
                         attackDirection = Direction.DOWN;
                         movementDirection = Direction.RIGHT;
                     }
-                    else if (dir.y < 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x) && dir.x < 0)
+                    else if (dir.y < 0 && Mathf.Abs(dir.y) >= Mathf.Abs(dir.x) && dir.x < 0)
                     {
                         attackDirection = Direction.DOWN;
                         movementDirection = Direction.LEFT;
@@ -638,12 +638,74 @@ public class EnemyAI : MonoBehaviour
                         //Shoot
                     }
                     break;
+                case ENEMY_TYPE.SPR:
+                    attackArea.size = attackReduced;
+                    attackArea.offset = attackOrigin;
+
+                    if (dir.x < 0 && Mathf.Abs(dir.x) >= Mathf.Abs(dir.y))
+                    {
+                        attackDirection = Direction.LEFT;
+                    }
+                    else if (dir.x > 0 && Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+                    {
+                        attackDirection = Direction.RIGHT;
+                    }
+                    else if (dir.y > 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
+                    {
+                        attackDirection = Direction.UP;
+                    }
+                    else if (dir.y < 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
+                    {
+                        attackDirection = Direction.DOWN;
+                    }
+                    anim.SetBool("Thrusting", true);                    
+                    switch (attackDirection)
+                    {
+                        case Direction.LEFT:
+                            {
+                                attackArea.size = new Vector2(8 * 0.095f, 2 * 0.095f);
+                                anim.SetInteger("LD", 4);
+                                anim.SetFloat("LastX", -1);
+                                anim.SetFloat("LastY", 0);
+                                attackArea.offset += new Vector2(-stopDistance*2, 0);
+                                break;
+                            }
+                        case Direction.RIGHT:
+                            {
+                                attackArea.size = new Vector2(8 * 0.095f, 2 * 0.095f);
+                                anim.SetInteger("LD", 2);
+                                anim.SetFloat("LastX", 1);
+                                anim.SetFloat("LastY", 0);
+                                attackArea.offset += new Vector2(stopDistance*2, 0);
+                                break;
+                            }
+                        case Direction.UP:
+                            {
+                                attackArea.size = new Vector2(2 * 0.095f, 8 * 0.095f);
+                                anim.SetInteger("LD", 1);
+                                anim.SetFloat("LastX", 0);
+                                anim.SetFloat("LastY", 1);
+                                attackArea.offset += new Vector2(0, stopDistance*2);
+                                break;
+                            }
+                        case Direction.DOWN:
+                            {
+                                attackArea.size = new Vector2(2 * 0.095f, 8 * 0.095f);
+                                anim.SetInteger("LD", 3);
+                                anim.SetFloat("LastX", 0);
+                                anim.SetFloat("LastY", -1);
+                                attackArea.offset += new Vector2(0, -stopDistance*2);
+                                break;
+                            }
+                    }
+                    attackTimer = attackCD;
+                    break;
             }
                                     
         }
         if (attackTimer <= 0.4f && enemy.tipo == ENEMY_TYPE.SKT)
         {
-            anim.SetBool("Slashing", false);
+            anim.SetBool("Thrusting", false);
         } 
     }
 
