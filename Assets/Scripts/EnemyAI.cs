@@ -33,7 +33,7 @@ public class EnemyAI : MonoBehaviour
     public bool inRoom = false;
 
     //el objetivo/jugador
-    public GameObject p;
+    private GameObject p;
     private Transform target;
     private CircleCollider2D targetCollider;
     private PlayerClass player;
@@ -114,6 +114,7 @@ public class EnemyAI : MonoBehaviour
 
     void Start()
     {
+        p = GameObject.Find("Jugador");
         target = p.GetComponent<Transform>();
         targetCollider = p.GetComponent<CircleCollider2D>();
         player = p.GetComponent<PlayerClass>();
@@ -141,9 +142,7 @@ public class EnemyAI : MonoBehaviour
             return;
         }
         distanceToTarget = Vector2.Distance(target.position, transform.position);
-        //return new path result to onpath complete
-        seeker.StartPath(transform.position, target.position, OnPathComplete);
-        StartCoroutine(UpdatePath());
+        //return new path result to onpath complete        
     }
     IEnumerator UpdatePath()
     {
@@ -193,18 +192,23 @@ public class EnemyAI : MonoBehaviour
                 else if ((distanceToTarget <= engageDistance && distanceToTarget > stopDistance) || (inRoom && distanceToTarget > stopDistance))
                 {
                     state = EnemyState.CHASING;
+                    seeker.StartPath(transform.position, target.position, OnPathComplete);
+                    StartCoroutine(UpdatePath());
                 }
                 else if (distanceToTarget <= stopDistance)
                 {
                     state = EnemyState.ATTACKING;
+                    StopCoroutine(UpdatePath());
                 }
                 else if (idleTimer <= 0)
                 {
                     state = EnemyState.ROAMING;
+                    StopCoroutine(UpdatePath());
                 }
                 else
                 {
                     state = EnemyState.IDLE;
+                    StopCoroutine(UpdatePath());
                 }
                 break;
             case ENEMY_TYPE.ZMB:
@@ -215,23 +219,53 @@ public class EnemyAI : MonoBehaviour
                 else if ((distanceToTarget <= 15 * stopDistance && distanceToTarget > 11 * stopDistance) || (inRoom && distanceToTarget > 11 * stopDistance))
                 {
                     state = EnemyState.CHASING;
+                    seeker.StartPath(transform.position, target.position, OnPathComplete);
+                    StartCoroutine(UpdatePath());
                 }
                 else if (distanceToTarget <= 11 * stopDistance)
                 {
                     state = EnemyState.ATTACKING;
+                    StopCoroutine(UpdatePath());
                 }
                 else if (idleTimer <= 0)
                 {
                     state = EnemyState.ROAMING;
+                    StopCoroutine(UpdatePath());
                 }
                 else
                 {
                     state = EnemyState.IDLE;
+                    StopCoroutine(UpdatePath());
+                }
+                break;
+            case ENEMY_TYPE.SPR:
+                if (enemy.healthPoints <= 15)
+                {
+                    state = EnemyState.FLEEING;
+                }
+                else if ((distanceToTarget <= engageDistance && distanceToTarget > 4*stopDistance) || (inRoom && distanceToTarget > 4*stopDistance))
+                {
+                    state = EnemyState.CHASING;
+                    seeker.StartPath(transform.position, target.position, OnPathComplete);
+                    StartCoroutine(UpdatePath());
+                }
+                else if (distanceToTarget <= 4*stopDistance)
+                {
+                    state = EnemyState.ATTACKING;
+                    StopCoroutine(UpdatePath());
+                }
+                else if (idleTimer <= 0)
+                {
+                    state = EnemyState.ROAMING;
+                    StopCoroutine(UpdatePath());
+                }
+                else
+                {
+                    state = EnemyState.IDLE;
+                    StopCoroutine(UpdatePath());
                 }
                 break;
         }
-    
-
 
         switch (state)
         {
@@ -705,8 +739,12 @@ public class EnemyAI : MonoBehaviour
         }
         if (attackTimer <= 0.4f && enemy.tipo == ENEMY_TYPE.SKT)
         {
+            anim.SetBool("Slashing", false);
+        }
+        /*if (attackTimer <= 0.8f && enemy.tipo == ENEMY_TYPE.SPR)
+        {
             anim.SetBool("Thrusting", false);
-        } 
+        }*/
     }
 
     public float map(float x, float in_min, float in_max, float out_on_min, float out_on_max)
