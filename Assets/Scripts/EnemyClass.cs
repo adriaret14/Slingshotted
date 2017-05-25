@@ -135,10 +135,10 @@ public class EnemyClass : MonoBehaviour {
                 damageMelee = 15f;
 
                 roamingSpeed = 0.102f;
-                speed = 0.04f;
-                fleeingSpeed = 0.102f;
+                speed = 0.03f;
+                fleeingSpeed = 0.07f;
 
-                attackCD = 0.0f;
+                attackCD = 0.8f;
                 rangedAttackCD = -1.0f;
                 conjuringCD = -1.0f;
 
