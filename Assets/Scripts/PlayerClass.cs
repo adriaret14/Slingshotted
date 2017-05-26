@@ -14,8 +14,7 @@ public class PlayerClass : MonoBehaviour {
     public float damageRanged = 100;
     //Tier de la armadura
     public int armorTier = 0;
-
-    [HideInInspector]
+        
     public bool fallenFlag = false;    
 	// Use this for initialization
 	void Start () {
@@ -24,11 +23,10 @@ public class PlayerClass : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (healthPoints < 0)
+        if (healthPoints <= 0)
         {
-            //print("Estoy muerto");
             healthPoints = 0;
-            //player.GetComponent<GameOvere>().RestartLvl();
+            player.GetComponent<GameOvere>().RestartLvl();
         }
             
         

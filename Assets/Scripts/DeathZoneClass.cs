@@ -23,11 +23,12 @@ public class DeathZoneClass : MonoBehaviour {
         {
             if (collision.GetComponent<PlayerClass>() != null)
             {
-                collision.GetComponent<PlayerClass>().healthPoints = 0;
+                collision.GetComponent<PlayerClass>().takeDamage(collision.GetComponent<PlayerClass>().healthPoints);
+                collision.GetComponent<Rigidbody2D>().gravityScale = 0;
             }
             else
             {
-                collision.GetComponent<EnemyClass>().healthPoints = 0;
+                collision.GetComponent<EnemyClass>().takeDamage(collision.GetComponent<EnemyClass>().healthPoints);
             }
         }
     }

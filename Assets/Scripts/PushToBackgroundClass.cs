@@ -21,7 +21,7 @@ public class PushToBackgroundClass : MonoBehaviour {
         }
         if (fallen)
         {
-            collision.gameObject.layer = 13;
+            collision.GetComponent<SpriteRenderer>().sortingLayerName = "Default";
             collision.GetComponent<SpriteRenderer>().sortingOrder = 1;
         }
     }

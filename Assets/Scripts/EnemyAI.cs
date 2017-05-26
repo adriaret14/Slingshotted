@@ -266,6 +266,10 @@ public class EnemyAI : MonoBehaviour
                 }
                 break;
         }
+        if (enemy.fallenFlag)
+        {
+            state = EnemyState.IDLE;
+        }
 
         switch (state)
         {
