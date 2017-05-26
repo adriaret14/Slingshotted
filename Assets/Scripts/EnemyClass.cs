@@ -64,6 +64,8 @@ public class EnemyClass : MonoBehaviour {
     //Vector unitario vertical
     private Vector2 vertical;
 
+    [HideInInspector]
+    public bool fallenFlag = false;
     // Use this for initialization
     void Start () {
 		vertical = new Vector2(0, 1);

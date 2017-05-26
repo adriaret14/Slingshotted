@@ -14,7 +14,9 @@ public class PlayerClass : MonoBehaviour {
     public float damageRanged = 100;
     //Tier de la armadura
     public int armorTier = 0;
-        
+
+    [HideInInspector]
+    public bool fallenFlag = false;    
 	// Use this for initialization
 	void Start () {
         

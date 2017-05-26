@@ -162,8 +162,10 @@
     <Compile Include="Assets\Scripts\Arrow.cs" />
     <Compile Include="Assets\Scripts\AttackCollider.cs" />
     <Compile Include="Assets\Scripts\Bars.cs" />
+    <Compile Include="Assets\Scripts\BottomlessPitClass.cs" />
     <Compile Include="Assets\Scripts\ControlCamara.cs" />
     <Compile Include="Assets\Scripts\ControlesJugador.cs" />
+    <Compile Include="Assets\Scripts\DeathZoneClass.cs" />
     <Compile Include="Assets\Scripts\EndLevel.cs" />
     <Compile Include="Assets\Scripts\EnemyAI.cs" />
     <Compile Include="Assets\Scripts\EnemyClass.cs" />
@@ -176,6 +178,8 @@
     <Compile Include="Assets\Scripts\OrbClass.cs" />
     <Compile Include="Assets\Scripts\PlayerClass.cs" />
     <Compile Include="Assets\Scripts\PosicionMinimapa.cs" />
+    <Compile Include="Assets\Scripts\PushAreaClass.cs" />
+    <Compile Include="Assets\Scripts\PushToBackgroundClass.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AstarPathfindingProject\Editor\EditorAssets\Materials\Navmesh.shader" />
