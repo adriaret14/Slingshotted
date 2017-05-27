@@ -89,7 +89,7 @@ public class EnemyAI : MonoBehaviour
     [HideInInspector]
     Direction attackDirection;
     [HideInInspector]
-    Direction movementDirection;
+    private int movementDirection;
     //Cooldown del ataque del enemigo
     private float attackCD;
     private float shootCD;
@@ -130,6 +130,7 @@ public class EnemyAI : MonoBehaviour
         attackArea.size = attackReduced;
         enemy = GetComponent<EnemyClass>();
         attackCD = enemy.attackCD;
+        shootCD = enemy.rangedAttackCD;
         speed = enemy.speed;
         roamingSpeed = enemy.roamingSpeed;
         fleeingSpeed = enemy.fleeingSpeed;
@@ -185,11 +186,11 @@ public class EnemyAI : MonoBehaviour
             attackTimer -= Time.deltaTime;
         else
         {
-            if (attackTimer <= 0.0f && enemy.tipo == ENEMY_TYPE.SKT)
+            if (enemy.tipo == ENEMY_TYPE.SKT)
             {
                 anim.SetBool("Slashing", false);
             }
-            if (attackTimer <= 0.0f && enemy.tipo == ENEMY_TYPE.SPR)
+            if (enemy.tipo == ENEMY_TYPE.SPR)
             {
                 anim.SetBool("Thrusting", false);
             }
@@ -222,7 +223,7 @@ public class EnemyAI : MonoBehaviour
                 }
                 break;
             case ENEMY_TYPE.ZMB:
-                if (enemy.healthPoints <= 15)
+                if (enemy.healthPoints <= 15 || distanceToTarget <= 6*stopDistance)
                 {
                     state = EnemyState.FLEEING;
                 }
@@ -624,94 +625,165 @@ public class EnemyAI : MonoBehaviour
                     if (dir.x < 0 && Mathf.Abs(dir.x) >= Mathf.Abs(dir.y) && dir.y >= 0)
                     {
                         attackDirection = Direction.LEFT;
-                        movementDirection = Direction.UP;
+                        movementDirection = 0;
                     }
                     else if (dir.x < 0 && Mathf.Abs(dir.x) >= Mathf.Abs(dir.y) && dir.y < 0)
                     {
                         attackDirection = Direction.LEFT;
-                        movementDirection = Direction.DOWN;
+                        movementDirection = 1;
                     }
                     else if (dir.x > 0 && Mathf.Abs(dir.x) >= Mathf.Abs(dir.y) && dir.y >= 0)
                     {
                         attackDirection = Direction.RIGHT;
-                        movementDirection = Direction.UP;
+                        movementDirection = 1;
                     }
                     else if (dir.x > 0 && Mathf.Abs(dir.x) >= Mathf.Abs(dir.y) && dir.y < 0)
                     {
                         attackDirection = Direction.RIGHT;
-                        movementDirection = Direction.DOWN;
+                        movementDirection = 0;
                     }
                     else if (dir.y > 0 && Mathf.Abs(dir.y) >= Mathf.Abs(dir.x) && dir.x >= 0)
                     {
                         attackDirection = Direction.UP;
-                        movementDirection = Direction.RIGHT;
+                        movementDirection = 0;
                     }
                     else if (dir.y > 0 && Mathf.Abs(dir.y) >= Mathf.Abs(dir.x) && dir.x < 0)
                     {
                         attackDirection = Direction.UP;
-                        movementDirection = Direction.LEFT;
+                        movementDirection = 1;
                     }
                     else if (dir.y < 0 && Mathf.Abs(dir.y) >= Mathf.Abs(dir.x) && dir.x >= 0)
                     {
                         attackDirection = Direction.DOWN;
-                        movementDirection = Direction.RIGHT;
+                        movementDirection = 1;
                     }
                     else if (dir.y < 0 && Mathf.Abs(dir.y) >= Mathf.Abs(dir.x) && dir.x < 0)
                     {
                         attackDirection = Direction.DOWN;
-                        movementDirection = Direction.LEFT;
+                        movementDirection = 0;
                     }
                     speedMultiplier = map(distanceToTarget, stopDistance, 10 * stopDistance, 1, 0);
                     switch (attackDirection)
                     {
                         case Direction.LEFT:
                             {
-                                movementNormalizedVector = new Vector2((movementDirection == Direction.UP ? 1 : -1), 0);                                                                
-                                //anim.SetInteger("LD", 4);
-                                //anim.SetFloat("LastX", -1);
-                                //anim.SetFloat("LastY", 0);
+                                if (movementDirection == 0)
+                                {
+                                    anim.SetInteger("LD", 1);
+                                    anim.SetFloat("LastX", 0);
+                                    anim.SetFloat("LastY", 1);
+                                }
+                                else
+                                {
+                                    anim.SetInteger("LD", 3);
+                                    anim.SetFloat("LastX", 0);
+                                    anim.SetFloat("LastY", -1);
+                                }
                                 attackArea.offset += new Vector2(-5*stopDistance, 0);
                                 attackArea.size = new Vector2((2*0.095f + 10*stopDistance), 0.095f);
                                 break;
                             }
                         case Direction.RIGHT:
                             {
-                                movementNormalizedVector = new Vector2((movementDirection == Direction.UP ? 1 : -1), 0);
-                                //anim.SetInteger("LD", 2);
-                                //anim.SetFloat("LastX", 1);
-                                //anim.SetFloat("LastY", 0);
+                                if (movementDirection == 0)
+                                {
+                                    anim.SetInteger("LD", 3);
+                                    anim.SetFloat("LastX", 0);
+                                    anim.SetFloat("LastY", -1);                                
+                                }
+                                else
+                                {
+                                    anim.SetInteger("LD", 1);
+                                    anim.SetFloat("LastX", 0);
+                                    anim.SetFloat("LastY", 1);
+                                }
                                 attackArea.offset += new Vector2(5*stopDistance, 0);
                                 attackArea.size = new Vector2((2 * 0.095f + 10 * stopDistance), 0.095f);
                                 break;
                             }
                         case Direction.UP:
                             {
-                                movementNormalizedVector = new Vector2(0, (movementDirection == Direction.RIGHT ? 1 : -1));
-                                //anim.SetInteger("LD", 1);
-                                //anim.SetFloat("LastX", 0);
-                                //anim.SetFloat("LastY", 1);
+                                if (movementDirection == 0)
+                                {
+                                    anim.SetInteger("LD", 2);
+                                    anim.SetFloat("LastX", 1);
+                                    anim.SetFloat("LastY", 0);
+                                }
+                                else
+                                {
+                                    anim.SetInteger("LD", 4);
+                                    anim.SetFloat("LastX", -1);
+                                    anim.SetFloat("LastY", 0);                                
+                                }
                                 attackArea.offset += new Vector2(0, 5*stopDistance);
                                 attackArea.size = new Vector2(0.095f, (2 * 0.095f + 10 * stopDistance));
                                 break;
                             }
                         case Direction.DOWN:
                             {
-                                movementNormalizedVector = new Vector2(0, (movementDirection == Direction.RIGHT ? 1 : -1));
-                                //anim.SetInteger("LD", 3);
-                                //anim.SetFloat("LastX", 0);
-                                //anim.SetFloat("LastY", -1);
+                                if (movementDirection == 0)
+                                {
+                                    anim.SetInteger("LD", 4);
+                                    anim.SetFloat("LastX", -1);
+                                    anim.SetFloat("LastY", 0);
+                                }
+                                else
+                                {
+                                    anim.SetInteger("LD", 2);
+                                    anim.SetFloat("LastX", 1);
+                                    anim.SetFloat("LastY", 0);                                
+                                }
                                 attackArea.offset += new Vector2(0, -5*stopDistance);
                                 attackArea.size = new Vector2(0.095f, (2 * 0.095f + 10 * stopDistance));
                                 break;
                             }
                     }
-                    rigid2D.velocity = speedMultiplier * speed * 10 * -dir + speed * 10 * (1 - speedMultiplier) * movementNormalizedVector;
+                    anim.SetBool("SeMueve", true);
+                    movementNormalizedVector = (movementDirection == 0 ? new Vector2(dir.y, -dir.x) : new Vector2(-dir.y, dir.x)).normalized;
+                    rigid2D.AddForce(movementNormalizedVector * speed * Time.deltaTime);
                     if (attackColliderScript.canShoot)
                     {
+                        switch (attackDirection)
+                        {
+                            case Direction.LEFT:
+                                {
+                                    anim.SetInteger("LD", 4);
+                                    anim.SetFloat("LastX", -1);
+                                    anim.SetFloat("LastY", 0);
+                                    break;
+                                }
+                            case Direction.RIGHT:
+                                {
+                                    anim.SetInteger("LD", 2);
+                                    anim.SetFloat("LastX", 1);
+                                    anim.SetFloat("LastY", 0);
+                                    break;
+                                }
+                            case Direction.UP:
+                                {
+                                    anim.SetInteger("LD", 1);
+                                    anim.SetFloat("LastX", 0);
+                                    anim.SetFloat("LastY", 1);
+                                    break;
+                                }
+                            case Direction.DOWN:
+                                {
+                                    anim.SetInteger("LD", 3);
+                                    anim.SetFloat("LastX", 0);
+                                    anim.SetFloat("LastY", -1);
+                                    break;
+                                }
+                        }
                         rigid2D.velocity = new Vector2(0, 0);
                         attackTimer = shootCD;
+                        anim.SetBool("SeMueve", false);
+                        anim.SetBool("Shooting", true);
+                        while (attackTimer > 0)
+                        {                                                        
+                            attackTimer -= Time.deltaTime;
+                        }
                         flechaClon = Instantiate<GameObject>(flecha, transform.position, transform.rotation);
-                        //Shoot
+                        anim.SetBool("Shooting", false);
                     }
                     break;
                 case ENEMY_TYPE.SPR:

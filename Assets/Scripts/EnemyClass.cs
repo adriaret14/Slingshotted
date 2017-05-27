@@ -103,7 +103,7 @@ public class EnemyClass : MonoBehaviour {
                 fleeingSpeed = 0.112f;
 
                 attackCD = -1.0f;
-                rangedAttackCD = 0.0f;
+                rangedAttackCD = 0.8f;
                 conjuringCD = -1.0f;
 
                 healthRegen = 10f;
