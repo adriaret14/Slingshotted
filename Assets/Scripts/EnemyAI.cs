@@ -135,6 +135,10 @@ public class EnemyAI : MonoBehaviour
         roamingSpeed = enemy.roamingSpeed;
         fleeingSpeed = enemy.fleeingSpeed;
 
+        if (enemy.tipo == ENEMY_TYPE.ZMB)
+        {
+            attackArea.GetComponent<AttackCollider>().cmode = COLLIDERMODE.DETECT;
+        }
         //Variables de animacion
         anim = GetComponent<Animator>();
 
@@ -227,11 +231,11 @@ public class EnemyAI : MonoBehaviour
                 {
                     state = EnemyState.FLEEING;
                 }
-                else if (((distanceToTarget <= 15 * stopDistance && distanceToTarget > 11 * stopDistance) || (inRoom && distanceToTarget > 11 * stopDistance)) && attackTimer <= 0)
+                else if (((distanceToTarget <= 15 * stopDistance && distanceToTarget > 10 * stopDistance) || (inRoom && distanceToTarget > 10 * stopDistance)) && attackTimer <= 0)
                 {
                     state = EnemyState.CHASING;
                 }
-                else if (distanceToTarget <= 11 * stopDistance)
+                else if (distanceToTarget <= 10 * stopDistance)
                 {
                     state = EnemyState.ATTACKING;
                 }
@@ -662,7 +666,6 @@ public class EnemyAI : MonoBehaviour
                         attackDirection = Direction.DOWN;
                         movementDirection = 0;
                     }
-                    speedMultiplier = map(distanceToTarget, stopDistance, 10 * stopDistance, 1, 0);
                     switch (attackDirection)
                     {
                         case Direction.LEFT:
@@ -679,7 +682,7 @@ public class EnemyAI : MonoBehaviour
                                     anim.SetFloat("LastX", 0);
                                     anim.SetFloat("LastY", -1);
                                 }
-                                attackArea.offset += new Vector2(-5*stopDistance, 0);
+                                attackArea.offset = new Vector2(-5*stopDistance, 0);
                                 attackArea.size = new Vector2((2*0.095f + 10*stopDistance), 0.095f);
                                 break;
                             }
@@ -697,7 +700,7 @@ public class EnemyAI : MonoBehaviour
                                     anim.SetFloat("LastX", 0);
                                     anim.SetFloat("LastY", 1);
                                 }
-                                attackArea.offset += new Vector2(5*stopDistance, 0);
+                                attackArea.offset = new Vector2(5*stopDistance, 0);
                                 attackArea.size = new Vector2((2 * 0.095f + 10 * stopDistance), 0.095f);
                                 break;
                             }
@@ -715,7 +718,7 @@ public class EnemyAI : MonoBehaviour
                                     anim.SetFloat("LastX", -1);
                                     anim.SetFloat("LastY", 0);                                
                                 }
-                                attackArea.offset += new Vector2(0, 5*stopDistance);
+                                attackArea.offset = new Vector2(0, 5*stopDistance);
                                 attackArea.size = new Vector2(0.095f, (2 * 0.095f + 10 * stopDistance));
                                 break;
                             }
@@ -733,7 +736,7 @@ public class EnemyAI : MonoBehaviour
                                     anim.SetFloat("LastX", 1);
                                     anim.SetFloat("LastY", 0);                                
                                 }
-                                attackArea.offset += new Vector2(0, -5*stopDistance);
+                                attackArea.offset = new Vector2(0, -5*stopDistance);
                                 attackArea.size = new Vector2(0.095f, (2 * 0.095f + 10 * stopDistance));
                                 break;
                             }
