@@ -109,6 +109,9 @@ public class EnemyAI : MonoBehaviour
     public GameObject flecha;
     public GameObject flechaClon;
 
+    private bool shot = false;
+    Direction shotDirection;
+
     private EnemyState lastState = EnemyState.IDLE;
     private bool pathStarted = false;
 
@@ -626,6 +629,8 @@ public class EnemyAI : MonoBehaviour
                     break;
 
                 case ENEMY_TYPE.ZMB:
+                    if (!shot)
+                {
                     if (dir.x < 0 && Mathf.Abs(dir.x) >= Mathf.Abs(dir.y) && dir.y >= 0)
                     {
                         attackDirection = Direction.LEFT;
@@ -682,8 +687,8 @@ public class EnemyAI : MonoBehaviour
                                     anim.SetFloat("LastX", 0);
                                     anim.SetFloat("LastY", -1);
                                 }
-                                attackArea.offset = new Vector2(-5*stopDistance, 0);
-                                attackArea.size = new Vector2((2*0.095f + 10*stopDistance), 0.095f);
+                                attackArea.offset = new Vector2(-5 * stopDistance, 0);
+                                attackArea.size = new Vector2((2 * 0.095f + 10 * stopDistance), 0.095f);
                                 break;
                             }
                         case Direction.RIGHT:
@@ -692,7 +697,7 @@ public class EnemyAI : MonoBehaviour
                                 {
                                     anim.SetInteger("LD", 3);
                                     anim.SetFloat("LastX", 0);
-                                    anim.SetFloat("LastY", -1);                                
+                                    anim.SetFloat("LastY", -1);
                                 }
                                 else
                                 {
@@ -700,7 +705,7 @@ public class EnemyAI : MonoBehaviour
                                     anim.SetFloat("LastX", 0);
                                     anim.SetFloat("LastY", 1);
                                 }
-                                attackArea.offset = new Vector2(5*stopDistance, 0);
+                                attackArea.offset = new Vector2(5 * stopDistance, 0);
                                 attackArea.size = new Vector2((2 * 0.095f + 10 * stopDistance), 0.095f);
                                 break;
                             }
@@ -716,9 +721,9 @@ public class EnemyAI : MonoBehaviour
                                 {
                                     anim.SetInteger("LD", 4);
                                     anim.SetFloat("LastX", -1);
-                                    anim.SetFloat("LastY", 0);                                
+                                    anim.SetFloat("LastY", 0);
                                 }
-                                attackArea.offset = new Vector2(0, 5*stopDistance);
+                                attackArea.offset = new Vector2(0, 5 * stopDistance);
                                 attackArea.size = new Vector2(0.095f, (2 * 0.095f + 10 * stopDistance));
                                 break;
                             }
@@ -734,9 +739,9 @@ public class EnemyAI : MonoBehaviour
                                 {
                                     anim.SetInteger("LD", 2);
                                     anim.SetFloat("LastX", 1);
-                                    anim.SetFloat("LastY", 0);                                
+                                    anim.SetFloat("LastY", 0);
                                 }
-                                attackArea.offset = new Vector2(0, -5*stopDistance);
+                                attackArea.offset = new Vector2(0, -5 * stopDistance);
                                 attackArea.size = new Vector2(0.095f, (2 * 0.095f + 10 * stopDistance));
                                 break;
                             }
@@ -744,6 +749,7 @@ public class EnemyAI : MonoBehaviour
                     anim.SetBool("SeMueve", true);
                     movementNormalizedVector = (movementDirection == 0 ? new Vector2(dir.y, -dir.x) : new Vector2(-dir.y, dir.x)).normalized;
                     rigid2D.AddForce(movementNormalizedVector * speed * Time.deltaTime);
+                }
                     if (attackColliderScript.canShoot)
                     {
                         switch (attackDirection)
@@ -781,12 +787,45 @@ public class EnemyAI : MonoBehaviour
                         attackTimer = shootCD;
                         anim.SetBool("SeMueve", false);
                         anim.SetBool("Shooting", true);
-                        while (attackTimer > 0)
-                        {                                                        
-                            attackTimer -= Time.deltaTime;
-                        }
-                        flechaClon = Instantiate<GameObject>(flecha, transform.position, transform.rotation);
+                        shot = true;
+                        shotDirection = attackDirection;                        
                         anim.SetBool("Shooting", false);
+                    }
+                    if (attackTimer <= 0 && shot)
+                    {
+                    switch (shotDirection)
+                    {
+                        case Direction.LEFT:
+                            {
+                                anim.SetInteger("LD", 4);
+                                anim.SetFloat("LastX", -1);
+                                anim.SetFloat("LastY", 0);
+                                break;
+                            }
+                        case Direction.RIGHT:
+                            {
+                                anim.SetInteger("LD", 2);
+                                anim.SetFloat("LastX", 1);
+                                anim.SetFloat("LastY", 0);
+                                break;
+                            }
+                        case Direction.UP:
+                            {
+                                anim.SetInteger("LD", 1);
+                                anim.SetFloat("LastX", 0);
+                                anim.SetFloat("LastY", 1);
+                                break;
+                            }
+                        case Direction.DOWN:
+                            {
+                                anim.SetInteger("LD", 3);
+                                anim.SetFloat("LastX", 0);
+                                anim.SetFloat("LastY", -1);
+                                break;
+                            }
+                    }
+                    flechaClon = Instantiate<GameObject>(flecha, transform.position, transform.rotation);
+                    shot = false;
                     }
                     break;
                 case ENEMY_TYPE.SPR:
