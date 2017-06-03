@@ -121,7 +121,7 @@
  <HintPath>G:/GAME DEVELOPMENT/Unity/Editor/Data/UnityExtensions/Unity/UnityVR/RuntimeEditor/UnityEngine.VR.dll</HintPath>
  </Reference>
  <Reference Include="Pathfinding.Ionic.Zip.Reduced">
- <HintPath>G:/GAME DEVELOPMENT/Proyecto 2/Slingshotted/Assets/AstarPathfindingProject/Plugins/DotNetZip/Pathfinding.Ionic.Zip.Reduced.dll</HintPath>
+ <HintPath>D:/ADRIÀ/Slingshotted/Slingshotted/Assets/AstarPathfindingProject/Plugins/DotNetZip/Pathfinding.Ionic.Zip.Reduced.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.Graphs">
  <HintPath>G:/GAME DEVELOPMENT/Unity/Editor/Data/Managed/UnityEditor.Graphs.dll</HintPath>
