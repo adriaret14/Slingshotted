@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public enum COLLIDERMODE { DETECT, HURT };
+public enum COLLIDERMODE { DETECT, HURT, SPIKE };
 public class AttackCollider : MonoBehaviour
 {
 
@@ -34,6 +34,10 @@ public class AttackCollider : MonoBehaviour
         attackArea = GetComponent<BoxCollider2D>();
         sizeFull = attackArea.size;
         origin = attackArea.offset;
+        if (parent.GetComponent<SpikesClass>() != null)
+        {
+            cmode = COLLIDERMODE.SPIKE;
+        }
     }
 
     // Update is called once per frame
@@ -45,7 +49,7 @@ public class AttackCollider : MonoBehaviour
     {
         switch (cmode)
         {
-            case (COLLIDERMODE.HURT):
+            case COLLIDERMODE.HURT:
                 if (collider.gameObject != parent)
                 {
                     if (collider.gameObject.GetComponent<EnemyClass>() != null)
@@ -62,10 +66,21 @@ public class AttackCollider : MonoBehaviour
                     }
                 }
                 break;
-            case (COLLIDERMODE.DETECT):
+            case COLLIDERMODE.DETECT:
                 if (collider.gameObject.GetComponent<PlayerClass>() != null)
                 {
                     canShoot = true;
+                }
+                break;
+            case COLLIDERMODE.SPIKE:
+                if (collider.gameObject.GetComponent<EnemyClass>() != null)
+                {
+                    collider.gameObject.GetComponent<EnemyClass>().takeDamage(parent.GetComponent<SpikesClass>().damage);
+                }
+                else if (collider.gameObject.GetComponent<PlayerClass>() != null)
+                {
+                    collider.gameObject.GetComponent<PlayerClass>().takeDamage(parent.GetComponent<SpikesClass>().damage);
+
                 }
                 break;
         }
@@ -75,9 +90,9 @@ public class AttackCollider : MonoBehaviour
     {
         switch (cmode)
         {
-            case (COLLIDERMODE.HURT):                
+            case COLLIDERMODE.HURT:                
                 break;
-            case (COLLIDERMODE.DETECT):
+            case COLLIDERMODE.DETECT:
                 if (collider.gameObject.GetComponent<PlayerClass>() != null)
                 {
                     canShoot = false;

@@ -19,6 +19,7 @@ public class BottomlessPitClass : MonoBehaviour {
                 collision.GetComponent<EnemyClass>().fallenFlag = true;
             }
             collision.GetComponent<Rigidbody2D>().gravityScale = gravity;
+            GameObject.Find("Mapa/Mapa2_Navmesh").SetActive(false);
         }
     }
 

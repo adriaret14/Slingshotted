@@ -180,6 +180,8 @@
     <Compile Include="Assets\Scripts\PosicionMinimapa.cs" />
     <Compile Include="Assets\Scripts\PushAreaClass.cs" />
     <Compile Include="Assets\Scripts\PushToBackgroundClass.cs" />
+    <Compile Include="Assets\SpikesClass.cs" />
+    <Compile Include="Assets\TriggerZoneClass.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AstarPathfindingProject\Editor\EditorAssets\Materials\Navmesh.shader" />
