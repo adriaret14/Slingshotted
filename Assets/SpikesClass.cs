@@ -8,6 +8,7 @@ public class SpikesClass : MonoBehaviour {
     public TriggerZoneClass triggerZone;
     private GameObject player;
 
+    public int startingPosition = 1;
     public float damage;
 
     public float highCD;
@@ -28,7 +29,7 @@ public class SpikesClass : MonoBehaviour {
         if (lowTimer > 0)
             lowTimer -= Time.deltaTime;
         if (highTimer > 0)
-            lowTimer -= Time.deltaTime;
+            highTimer -= Time.deltaTime;
 
         if (lowTimer <= 0 && State == 1)
         {
@@ -46,7 +47,8 @@ public class SpikesClass : MonoBehaviour {
 
         if (triggerZone.inArea && State == 0)
         {
-            State = 1;
+            State = startingPosition;
+            lowTimer = lowCD;
             dmgCollider.SetActive(true);
         }
 
