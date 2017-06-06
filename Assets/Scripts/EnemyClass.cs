@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum ORB { LIFE, DEATH, NONE };
-public enum ENEMY_TYPE { SKT, ZMB, NIG, SPR, CON };
+public enum ENEMY_TYPE { SKT, ZMB, NIG, SPR, CON, BDK };
 public class EnemyClass : MonoBehaviour {
 
     //Tipo de enemigo
@@ -83,6 +83,26 @@ public class EnemyClass : MonoBehaviour {
                 fleeingSpeed = 0.112f;
 
                 attackCD = 0.5f;
+                rangedAttackCD = -1.0f;
+                conjuringCD = -1.0f;
+
+                healthRegen = 10f;
+                regenWaitCD = 3f;
+                regenTimer = 0f;
+
+                break;
+
+            case ENEMY_TYPE.BDK:
+
+                healthPoints = 300f;
+                damageMelee = 55f;
+                damageRanged = 0f;
+
+                roamingSpeed = 0.00f;
+                speed = 30f;
+                fleeingSpeed = 0.00f;
+
+                attackCD = 5f;
                 rangedAttackCD = -1.0f;
                 conjuringCD = -1.0f;
 

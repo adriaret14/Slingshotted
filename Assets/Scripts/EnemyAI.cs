@@ -118,6 +118,9 @@ public class EnemyAI : MonoBehaviour
     //Variables de animacion
     private Animator anim;
 
+    private float animTimer;
+    private float animCD = 0.8f;
+
     void Start()
     {
         p = GameObject.Find("Jugador");
@@ -204,10 +207,34 @@ public class EnemyAI : MonoBehaviour
             }
         }
 
+        if (animTimer > 0)
+            animTimer -= Time.deltaTime;
+        else
+        {
+            if (enemy.tipo == ENEMY_TYPE.BDK)
+            {
+                anim.SetBool("Slashing", false);
+            }
+        }
+
 
         //Conditionals that set the ai state
         switch (enemy.tipo)
         {
+            case ENEMY_TYPE.BDK:
+                if (((distanceToTarget <= engageDistance && distanceToTarget > 2.1*stopDistance) || (inRoom && distanceToTarget > 2.1*stopDistance)) && attackTimer <= 0)
+                {
+                    state = EnemyState.CHASING;
+                }
+                else if (distanceToTarget <= stopDistance)
+                {
+                    state = EnemyState.ATTACKING;
+                }
+                else
+                {
+                    state = EnemyState.IDLE;
+                }
+                break;
             case ENEMY_TYPE.SKT:
                 if (enemy.healthPoints <= 15)
                 {
@@ -305,7 +332,7 @@ public class EnemyAI : MonoBehaviour
         switch (state)
         {
             case EnemyState.IDLE:
-                {
+                
                     if (pathStarted)
                     {
                         StopAllCoroutines();
@@ -314,9 +341,9 @@ public class EnemyAI : MonoBehaviour
                     lastState = EnemyState.IDLE;
                     Idle();
                     break;
-                }
+                
             case EnemyState.CHASING:
-                {
+                
                     if (lastState != EnemyState.CHASING && lastState != EnemyState.FLEEING)
                     {
                         seeker.StartPath(transform.position, target.position, OnPathComplete);
@@ -326,9 +353,9 @@ public class EnemyAI : MonoBehaviour
                     pathStarted = true;
                     Chasing();
                     break;
-                }
+                
             case EnemyState.ROAMING:
-                {
+                
                     if (pathStarted)
                     {
                         StopAllCoroutines();
@@ -337,9 +364,9 @@ public class EnemyAI : MonoBehaviour
                     lastState = EnemyState.ROAMING;
                     Roaming();
                     break;
-                }
+                
             case EnemyState.ATTACKING:
-                {
+                
                     if (pathStarted)
                     {
                         StopAllCoroutines();
@@ -348,9 +375,9 @@ public class EnemyAI : MonoBehaviour
                     lastState = EnemyState.ATTACKING;
                     Attacking();
                     break;
-                }
+                
             case EnemyState.FLEEING:
-                {
+                
                     if (lastState != EnemyState.CHASING && lastState != EnemyState.FLEEING)
                     {
                         seeker.StartPath(transform.position, target.position, OnPathComplete);
@@ -368,7 +395,7 @@ public class EnemyAI : MonoBehaviour
                     pathStarted = true;
                     Fleeing();
                     break;
-                }
+                
         }
     }
 
@@ -650,6 +677,70 @@ public class EnemyAI : MonoBehaviour
                         attackTimer = attackCD;
                     }
                     break;
+            case ENEMY_TYPE.BDK:
+                anim.SetBool("SeMueve", false);
+                attackArea.size = attackReduced;
+                attackArea.offset = attackOrigin;
+
+                if (dir.x < 0 && Mathf.Abs(dir.x) >= Mathf.Abs(dir.y))
+                {
+                    attackDirection = Direction.LEFT;
+                    anim.SetInteger("LD", 4);
+                    anim.SetFloat("LastX", -1);
+                    anim.SetFloat("LastY", 0);
+                }
+                else if (dir.x > 0 && Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+                {
+                    attackDirection = Direction.RIGHT;
+                    anim.SetInteger("LD", 2);
+                    anim.SetFloat("LastX", 1);
+                    anim.SetFloat("LastY", 0);
+                }
+                else if (dir.y > 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
+                {
+                    attackDirection = Direction.UP;
+                    anim.SetInteger("LD", 1);
+                    anim.SetFloat("LastX", 0);
+                    anim.SetFloat("LastY", 1);
+                }
+                else if (dir.y < 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
+                {
+                    attackDirection = Direction.DOWN;
+                    anim.SetInteger("LD", 3);
+                    anim.SetFloat("LastX", 0);
+                    anim.SetFloat("LastY", -1);
+                }
+                if (attackTimer <= 0)
+                {
+                    anim.SetBool("Slashing", true);
+                    animTimer = animCD;
+                    attackArea.size = attackSize;
+                    switch (attackDirection)
+                    {
+                        case Direction.LEFT:
+                            {
+                                attackArea.offset += new Vector2(-2*stopDistance, 0);
+                                break;
+                            }
+                        case Direction.RIGHT:
+                            {
+                                attackArea.offset += new Vector2(2*stopDistance, 0);
+                                break;
+                            }
+                        case Direction.UP:
+                            {
+                                attackArea.offset += new Vector2(0, 2*stopDistance);
+                                break;
+                            }
+                        case Direction.DOWN:
+                            {
+                                attackArea.offset += new Vector2(0, -2*stopDistance);
+                                break;
+                            }
+                    }
+                    attackTimer = attackCD;
+                }
+                break;
             case ENEMY_TYPE.CON:
                 anim.SetBool("SeMueve", false);
                 attackArea.size = attackReduced;
