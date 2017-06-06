@@ -9,15 +9,13 @@ public class GameOvere : MonoBehaviour {
     public GameObject player;
 
     public GameObject menu;
-    public GameObject menu2;
     public Button restart1;
-    public Button restart2;
+    public Button mainMenu;
 
 
 	// Use this for initialization
 	void Start () {
         menu.SetActive(false);
-        menu2.SetActive(false);
 	}
 	
 	// Update is called once per frame
@@ -29,17 +27,22 @@ public class GameOvere : MonoBehaviour {
     {
         menu.SetActive(true);
         restart1.onClick.AddListener(RestartScene);
+        mainMenu.onClick.AddListener(goToMainMenu);
     }
 
-    public void RestartLvl2()
+    public void GoToLvl2()
     {
-        menu2.SetActive(true);
-        restart2.onClick.AddListener(RestartScene);
+        SceneManager.LoadScene("Map2");
     }
 
     public void RestartScene()
     {
         SceneManager.LoadScene("Map1");
+    }
+
+    public void goToMainMenu()
+    {
+        SceneManager.LoadScene("Main Menu");
     }
 }
 

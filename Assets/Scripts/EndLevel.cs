@@ -18,7 +18,7 @@ public class EndLevel : MonoBehaviour {
     {
         if (collision.gameObject == GameObject.Find("Jugador"))
         {
-            GameObject.Find("Jugador").GetComponent<GameOvere>().RestartLvl2();
+            GameObject.Find("Jugador").GetComponent<GameOvere>().GoToLvl2();
         }
     }
 }
