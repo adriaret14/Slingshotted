@@ -5,6 +5,9 @@ using System.Timers;
 using UnityEngine.UI;
 
 public class ControlesJugador : MonoBehaviour {
+    public AudioClip atkClip;
+    public AudioSource soundAtk;
+
 
     public GameObject player;
     public float Speed;
@@ -49,7 +52,7 @@ public class ControlesJugador : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        Debug.LogWarning(shootDir);
+        //Debug.LogWarning(shootDir);
         //print(Input.GetAxis("PS4-VER-PAD")+"\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"+ Input.GetAxis("PS4-HOR-PAD"));
 
         PlayerMoving = false;
@@ -182,7 +185,7 @@ public class ControlesJugador : MonoBehaviour {
         {
             anim.SetInteger("LD", LLD);
             //print(LLD);
-            Debug.LogWarning(LLD);
+            //Debug.LogWarning(LLD);
             shootDir = anim.GetInteger("LD");
         }
 
@@ -251,6 +254,7 @@ public class ControlesJugador : MonoBehaviour {
         //Ataque
         if ((Input.GetKey(KeyCode.Space) && canMove) || Input.GetButtonDown("PS4-X"))
         {
+            soundAtk.PlayOneShot(atkClip, 60);
             anim.SetBool("Slashing", true);
             PlayerMoving = false;
             GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0) * Speed * Time.deltaTime;

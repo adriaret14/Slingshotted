@@ -39,7 +39,7 @@ public class Bars : MonoBehaviour
             }
             else
             {
-                barra2.rectTransform.localScale += new Vector3(-(dmg / 100), 0, 0);
+                barra2.rectTransform.localScale += new Vector3(-(dmg / 100f), 0, 0);
             }
            
         }

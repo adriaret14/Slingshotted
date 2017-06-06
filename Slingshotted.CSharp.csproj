@@ -170,6 +170,8 @@
     <Compile Include="Assets\Scripts\EnemyAI.cs" />
     <Compile Include="Assets\Scripts\EnemyClass.cs" />
     <Compile Include="Assets\Scripts\GameOvere.cs" />
+    <Compile Include="Assets\Scripts\GameOvere2.cs" />
+    <Compile Include="Assets\Scripts\GameOvere3.cs" />
     <Compile Include="Assets\Scripts\GateClass.cs" />
     <Compile Include="Assets\Scripts\InventoryManager.cs" />
     <Compile Include="Assets\Scripts\InventorySlot.cs" />
@@ -177,8 +179,13 @@
     <Compile Include="Assets\Scripts\LvlControl.cs" />
     <Compile Include="Assets\Scripts\MainMenuScripts.cs" />
     <Compile Include="Assets\Scripts\OrbClass.cs" />
+    <Compile Include="Assets\Scripts\Pause1.cs" />
+    <Compile Include="Assets\Scripts\Pause2.cs" />
+    <Compile Include="Assets\Scripts\Pause3.cs" />
     <Compile Include="Assets\Scripts\PlayerClass.cs" />
     <Compile Include="Assets\Scripts\PosicionMinimapa.cs" />
+    <Compile Include="Assets\Scripts\PosicionMinimapa2.cs" />
+    <Compile Include="Assets\Scripts\PosicionMinimapa3.cs" />
     <Compile Include="Assets\Scripts\PushAreaClass.cs" />
     <Compile Include="Assets\Scripts\PushToBackgroundClass.cs" />
     <Compile Include="Assets\Scripts\SpikesClass.cs" />

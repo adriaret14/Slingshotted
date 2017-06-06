@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerClass : MonoBehaviour {
 
@@ -23,11 +24,15 @@ public class PlayerClass : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        
+
         if (healthPoints <= 0)
         {
             healthPoints = 0;
-            player.GetComponent<GameOvere>().RestartLvl();
+            restartLevel();
+            
         }
+        
             
         
     }
@@ -40,11 +45,35 @@ public class PlayerClass : MonoBehaviour {
         if (healthPoints < dmg)
         {
             healthPoints = 0;
-            player.GetComponent<GameOvere>().RestartLvl();
+            restartLevel();
         }
         else
         {
             healthPoints -= dmg;
         } 
+    }
+    
+    public void restartLevel()
+    {
+        Scene escena = SceneManager.GetActiveScene();
+        string cad = escena.name;
+        string[] subcad = cad.Split('p');
+
+        if (subcad[1] == "1")
+        {
+            player.GetComponent<GameOvere>().RestartLvl();
+        }
+        else if (subcad[1] == "2")
+        {
+            player.GetComponent<GameOvere2>().RestartLvl();
+        }
+        else if (subcad[1] == "3")
+        {
+            player.GetComponent<GameOvere3>().RestartLvl();
+        }
+        else if (subcad[1] == "4")
+        {
+            //player.GetComponent<GameOvere4>().RestartLvl();
+        }
     } 
 }

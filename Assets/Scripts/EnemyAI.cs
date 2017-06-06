@@ -180,7 +180,8 @@ public class EnemyAI : MonoBehaviour
     void Update()
     {
         //Checks if the player is in the room
-        inRoom = room.IsTouching(targetCollider);
+        if(enemy.tipo != ENEMY_TYPE.CON)
+            inRoom = room.IsTouching(targetCollider);
         //Gets the distance from the player to the ai 
         distanceToTarget = Vector2.Distance(target.position, transform.position);
 
@@ -193,7 +194,7 @@ public class EnemyAI : MonoBehaviour
             attackTimer -= Time.deltaTime;
         else
         {
-            if (enemy.tipo == ENEMY_TYPE.SKT)
+            if (enemy.tipo == ENEMY_TYPE.SKT || enemy.tipo == ENEMY_TYPE.CON)
             {
                 anim.SetBool("Slashing", false);
             }
@@ -213,6 +214,28 @@ public class EnemyAI : MonoBehaviour
                     state = EnemyState.FLEEING;
                 }
                 else if (((distanceToTarget <= engageDistance && distanceToTarget > stopDistance) || (inRoom && distanceToTarget > stopDistance)) && attackTimer <= 0)
+                {
+                    state = EnemyState.CHASING;
+                }
+                else if (distanceToTarget <= stopDistance)
+                {
+                    state = EnemyState.ATTACKING;
+                }
+                else if (idleTimer <= 0)
+                {
+                    state = EnemyState.ROAMING;
+                }
+                else
+                {
+                    state = EnemyState.IDLE;
+                }
+                break;
+            case ENEMY_TYPE.CON:
+                if (enemy.healthPoints <= 15)
+                {
+                    state = EnemyState.FLEEING;
+                }
+                else if ((distanceToTarget <= engageDistance && distanceToTarget > stopDistance) && attackTimer <= 0)
                 {
                     state = EnemyState.CHASING;
                 }
@@ -627,8 +650,71 @@ public class EnemyAI : MonoBehaviour
                         attackTimer = attackCD;
                     }
                     break;
+            case ENEMY_TYPE.CON:
+                anim.SetBool("SeMueve", false);
+                attackArea.size = attackReduced;
+                attackArea.offset = attackOrigin;
 
-                case ENEMY_TYPE.ZMB:
+                if (dir.x < 0 && Mathf.Abs(dir.x) >= Mathf.Abs(dir.y))
+                {
+                    attackDirection = Direction.LEFT;
+                    anim.SetInteger("LD", 4);
+                    anim.SetFloat("LastX", -1);
+                    anim.SetFloat("LastY", 0);
+                }
+                else if (dir.x > 0 && Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+                {
+                    attackDirection = Direction.RIGHT;
+                    anim.SetInteger("LD", 2);
+                    anim.SetFloat("LastX", 1);
+                    anim.SetFloat("LastY", 0);
+                }
+                else if (dir.y > 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
+                {
+                    attackDirection = Direction.UP;
+                    anim.SetInteger("LD", 1);
+                    anim.SetFloat("LastX", 0);
+                    anim.SetFloat("LastY", 1);
+                }
+                else if (dir.y < 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
+                {
+                    attackDirection = Direction.DOWN;
+                    anim.SetInteger("LD", 3);
+                    anim.SetFloat("LastX", 0);
+                    anim.SetFloat("LastY", -1);
+                }
+                if (attackTimer <= 0)
+                {
+                    anim.SetBool("Slashing", true);
+                    attackArea.size = attackSize;
+                    switch (attackDirection)
+                    {
+                        case Direction.LEFT:
+                            {
+                                attackArea.offset += new Vector2(-stopDistance, 0);
+                                break;
+                            }
+                        case Direction.RIGHT:
+                            {
+                                attackArea.offset += new Vector2(stopDistance, 0);
+                                break;
+                            }
+                        case Direction.UP:
+                            {
+                                attackArea.offset += new Vector2(0, stopDistance);
+                                break;
+                            }
+                        case Direction.DOWN:
+                            {
+                                attackArea.offset += new Vector2(0, -stopDistance);
+                                break;
+                            }
+                    }
+                    attackTimer = attackCD;
+                }
+                break;
+
+            case ENEMY_TYPE.ZMB:
                     if (!shot)
                 {
                     if (dir.x < 0 && Mathf.Abs(dir.x) >= Mathf.Abs(dir.y) && dir.y >= 0)
