@@ -119,11 +119,11 @@ public class EnemyClass : MonoBehaviour {
 
                 roamingSpeed = 0.102f;
                 speed = 0.05f;
-                fleeingSpeed = 0.102f;
+                fleeingSpeed = 0.07f;
 
-                attackCD = 0.0f;
+                attackCD = -0.0f;
                 rangedAttackCD = -1.0f;
-                conjuringCD = 0.0f;
+                conjuringCD = 15.0f;
 
                 healthRegen = 10f;
                 regenWaitCD = 3f;

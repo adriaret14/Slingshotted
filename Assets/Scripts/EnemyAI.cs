@@ -107,7 +107,12 @@ public class EnemyAI : MonoBehaviour
     private float speedMultiplier;
 
     public GameObject flecha;
+    [HideInInspector]
     public GameObject flechaClon;
+
+    public GameObject Con;
+    [HideInInspector]
+    public GameObject ConClon;
 
     private bool shot = false;
     Direction shotDirection;
@@ -118,6 +123,10 @@ public class EnemyAI : MonoBehaviour
     //Variables de animacion
     private Animator anim;
 
+    private float animDuration = 0.8f;
+    private float animTimer;
+    private bool casting = false;
+
     void Start()
     {
         p = GameObject.Find("Jugador");
@@ -126,12 +135,13 @@ public class EnemyAI : MonoBehaviour
         player = p.GetComponent<PlayerClass>();
         playerRig = p.GetComponent<Rigidbody2D>();
 
+        enemy = GetComponent<EnemyClass>();
+
         attackColliderScript = attackArea.GetComponent<AttackCollider>();
         
         attackOrigin = attackArea.offset;
         attackSize = attackArea.size;
         attackArea.size = attackReduced;
-        enemy = GetComponent<EnemyClass>();
         attackCD = enemy.attackCD;
         shootCD = enemy.rangedAttackCD;
         speed = enemy.speed;
@@ -144,6 +154,10 @@ public class EnemyAI : MonoBehaviour
         }
         //Variables de animacion
         anim = GetComponent<Animator>();
+        if (GetComponent<Animator>() == null)
+        {
+            Debug.LogWarning("No hay animator???");
+        }
 
         seeker = GetComponent<Seeker>();
         rigid2D = GetComponent<Rigidbody2D>();
@@ -180,8 +194,7 @@ public class EnemyAI : MonoBehaviour
     void Update()
     {
         //Checks if the player is in the room
-        if(enemy.tipo != ENEMY_TYPE.CON)
-            inRoom = room.IsTouching(targetCollider);
+        
         //Gets the distance from the player to the ai 
         distanceToTarget = Vector2.Distance(target.position, transform.position);
 
@@ -204,11 +217,23 @@ public class EnemyAI : MonoBehaviour
             }
         }
 
+        //animation timer control
+        if (animTimer > 0)
+            animTimer -= Time.deltaTime;
+        else
+        {
+            if (enemy.tipo == ENEMY_TYPE.NIG)
+            {
+                anim.SetBool("Slashing", false);
+            }
+        }
+
 
         //Conditionals that set the ai state
         switch (enemy.tipo)
         {
             case ENEMY_TYPE.SKT:
+                inRoom = room.IsTouching(targetCollider);
                 if (enemy.healthPoints <= 15)
                 {
                     state = EnemyState.FLEEING;
@@ -252,16 +277,17 @@ public class EnemyAI : MonoBehaviour
                     state = EnemyState.IDLE;
                 }
                 break;
-            case ENEMY_TYPE.ZMB:
-                if (enemy.healthPoints <= 15 || distanceToTarget <= 6*stopDistance)
+            case ENEMY_TYPE.NIG:
+                inRoom = room.IsTouching(targetCollider);
+                if (enemy.healthPoints <= 15 || distanceToTarget <= 7*stopDistance)
                 {
                     state = EnemyState.FLEEING;
                 }
-                else if (((distanceToTarget <= 15 * stopDistance && distanceToTarget > 10 * stopDistance) || (inRoom && distanceToTarget > 10 * stopDistance)) && attackTimer <= 0)
+                else if ((inRoom && distanceToTarget > 15 * stopDistance) && attackTimer <= 0)
                 {
                     state = EnemyState.CHASING;
                 }
-                else if (distanceToTarget <= 10 * stopDistance)
+                else if (distanceToTarget <= 15 * stopDistance)
                 {
                     state = EnemyState.ATTACKING;
                 }
@@ -275,6 +301,7 @@ public class EnemyAI : MonoBehaviour
                 }
                 break;
             case ENEMY_TYPE.SPR:
+                inRoom = room.IsTouching(targetCollider);
                 if (enemy.healthPoints <= 15)
                 {
                     state = EnemyState.FLEEING;
@@ -714,7 +741,7 @@ public class EnemyAI : MonoBehaviour
                 }
                 break;
 
-            case ENEMY_TYPE.ZMB:
+            /*case ENEMY_TYPE.ZMB:
                     if (!shot)
                 {
                     if (dir.x < 0 && Mathf.Abs(dir.x) >= Mathf.Abs(dir.y) && dir.y >= 0)
@@ -914,6 +941,49 @@ public class EnemyAI : MonoBehaviour
                     shot = false;
                     }
                     break;
+                    */
+            case ENEMY_TYPE.NIG:
+                if (animTimer <= 0 && casting)
+                {
+                    casting = false;
+                    ConClon = Instantiate<GameObject>(Con, new Vector2(target.transform.position.x + 4*stopDistance, target.transform.position.y), target.transform.rotation);
+                    ConClon = Instantiate<GameObject>(Con, new Vector2(target.transform.position.x - 4*stopDistance, target.transform.position.y), target.transform.rotation);
+                    ConClon = Instantiate<GameObject>(Con, new Vector2(target.transform.position.x, target.transform.position.y + 4*stopDistance), target.transform.rotation);
+                    ConClon = Instantiate<GameObject>(Con, new Vector2(target.transform.position.x, target.transform.position.y - 4*stopDistance), target.transform.rotation);
+                }
+                if (attackTimer <= 0)
+                {
+                    casting = true;
+                    if (dir.x < 0 && Mathf.Abs(dir.x) >= Mathf.Abs(dir.y))
+                    {
+                        anim.SetInteger("LD", 4);
+                        anim.SetFloat("LastX", -1);
+                        anim.SetFloat("LastY", 0);
+                    }
+                    else if (dir.x > 0 && Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+                    {
+                        anim.SetInteger("LD", 2);
+                        anim.SetFloat("LastX", 1);
+                        anim.SetFloat("LastY", 0);
+                    }
+                    else if (dir.y > 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
+                    {
+                        anim.SetInteger("LD", 1);
+                        anim.SetFloat("LastX", 0);
+                        anim.SetFloat("LastY", 1);
+                    }
+                    else if (dir.y < 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
+                    {
+                        anim.SetInteger("LD", 3);
+                        anim.SetFloat("LastX", 0);
+                        anim.SetFloat("LastY", -1);
+                    }
+                    anim.SetBool("Slashing", true);
+                    animTimer = animDuration;
+                    attackTimer = enemy.conjuringCD;
+                }
+
+                break;
                 case ENEMY_TYPE.SPR:
                     anim.SetBool("SeMueve", false);
                     attackArea.size = attackReduced;
