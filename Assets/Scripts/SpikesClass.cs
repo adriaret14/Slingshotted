@@ -48,8 +48,17 @@ public class SpikesClass : MonoBehaviour {
         if (triggerZone.inArea && State == 0)
         {
             State = startingPosition;
-            lowTimer = lowCD;
-            dmgCollider.SetActive(true);
+            if (State == 1)
+            {
+                dmgCollider.SetActive(false);
+                lowTimer = lowCD;
+            }
+            else
+            {
+                dmgCollider.SetActive(true);
+                highTimer = highCD;
+            }
+            
         }
 
         else if (!triggerZone.inArea)

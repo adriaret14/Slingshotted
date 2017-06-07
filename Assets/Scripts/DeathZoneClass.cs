@@ -31,7 +31,9 @@ public class DeathZoneClass : MonoBehaviour {
                 collision.GetComponent<EnemyClass>().takeDamage(collision.GetComponent<EnemyClass>().healthPoints);
             }
 
-            GameObject.Find("Mapa/Mapa2_Navmesh").SetActive(true);
+            if (GameObject.Find("Mapa/Mapa2_Navmesh") != null) GameObject.Find("Mapa/Mapa2_Navmesh").SetActive(true);
+            else if (GameObject.Find("Mapa/Mapa3_Navmesh") != null) GameObject.Find("Mapa/Mapa3_Navmesh").SetActive(true);
+            else if (GameObject.Find("Mapa/Mapa4_Navmesh") != null) GameObject.Find("Mapa/Mapa4_Navmesh").SetActive(true);
         }
     }
 }
