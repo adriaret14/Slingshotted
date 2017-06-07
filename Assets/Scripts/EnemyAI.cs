@@ -25,7 +25,7 @@ enum Direction
 public class EnemyAI : MonoBehaviour
 {
     //el npc
-    private EnemyClass enemy;
+    public EnemyClass enemy;
 
     //the room
     public BoxCollider2D room;
@@ -122,6 +122,10 @@ public class EnemyAI : MonoBehaviour
     private float animCD = 0.8f;
     private bool animating = false;
 
+    public GameObject con;
+    [HideInInspector]
+    public GameObject conClon;
+
     void Start()
     {
         p = GameObject.Find("Jugador");
@@ -130,11 +134,15 @@ public class EnemyAI : MonoBehaviour
         player = p.GetComponent<PlayerClass>();
         playerRig = p.GetComponent<Rigidbody2D>();
 
-        attackColliderScript = attackArea.GetComponent<AttackCollider>();
-        
-        attackOrigin = attackArea.offset;
-        attackSize = attackArea.size;
-        attackArea.size = attackReduced;
+        if (GetComponent<EnemyClass>().tipo != ENEMY_TYPE.NIG)
+        {
+            attackColliderScript = attackArea.GetComponent<AttackCollider>();
+            attackOrigin = attackArea.offset;
+            attackSize = attackArea.size;
+            attackArea.size = attackReduced;
+        }
+
+
         enemy = GetComponent<EnemyClass>();
         attackCD = enemy.attackCD;
         shootCD = enemy.rangedAttackCD;
@@ -183,8 +191,9 @@ public class EnemyAI : MonoBehaviour
     }
     void Update()
     {
+        enemy = GetComponent<EnemyClass>();
         //Checks if the player is in the room
-        if(enemy.tipo != ENEMY_TYPE.CON)
+        if(room != null)
             inRoom = room.IsTouching(targetCollider);
         //Gets the distance from the player to the ai 
         distanceToTarget = Vector2.Distance(target.position, transform.position);
@@ -196,6 +205,7 @@ public class EnemyAI : MonoBehaviour
         //attack timer control
         if (attackTimer > 0)
             attackTimer -= Time.deltaTime;
+
         else
         {
             if (enemy.tipo == ENEMY_TYPE.SKT || enemy.tipo == ENEMY_TYPE.CON)
@@ -212,7 +222,7 @@ public class EnemyAI : MonoBehaviour
             animTimer -= Time.deltaTime;
         else
         {
-            if (enemy.tipo == ENEMY_TYPE.BDK)
+            if (enemy.tipo == ENEMY_TYPE.BDK || enemy.tipo == ENEMY_TYPE.NIG)
             {
                 anim.SetBool("Slashing", false);
             }
@@ -262,22 +272,14 @@ public class EnemyAI : MonoBehaviour
                 if (enemy.healthPoints <= 15)
                 {
                     state = EnemyState.FLEEING;
-                }
-                else if ((distanceToTarget <= engageDistance && distanceToTarget > stopDistance) && attackTimer <= 0)
-                {
-                    state = EnemyState.CHASING;
-                }
+                }                
                 else if (distanceToTarget <= stopDistance)
                 {
                     state = EnemyState.ATTACKING;
                 }
-                else if (idleTimer <= 0)
-                {
-                    state = EnemyState.ROAMING;
-                }
                 else
                 {
-                    state = EnemyState.IDLE;
+                    state = EnemyState.CHASING;
                 }
                 break;
             case ENEMY_TYPE.ZMB:
@@ -290,6 +292,28 @@ public class EnemyAI : MonoBehaviour
                     state = EnemyState.CHASING;
                 }
                 else if (distanceToTarget <= 10 * stopDistance)
+                {
+                    state = EnemyState.ATTACKING;
+                }
+                else if (idleTimer <= 0)
+                {
+                    state = EnemyState.ROAMING;
+                }
+                else
+                {
+                    state = EnemyState.IDLE;
+                }
+                break;
+            case ENEMY_TYPE.NIG:
+                if (enemy.healthPoints <= 15 || distanceToTarget <= 10 * stopDistance)
+                {
+                    state = EnemyState.FLEEING;
+                }
+                else if (((distanceToTarget <= 15 * stopDistance && distanceToTarget > 13 * stopDistance) || (inRoom && distanceToTarget > 13 * stopDistance)) && attackTimer <= 0)
+                {
+                    state = EnemyState.ATTACKING;
+                }
+                else if (distanceToTarget <= 13 * stopDistance)
                 {
                     state = EnemyState.ATTACKING;
                 }
@@ -409,6 +433,8 @@ public class EnemyAI : MonoBehaviour
     }
     private void Roaming()
     {
+        rigid2D = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
         if (roamingTimer > 0)
         {            
             roamingTimer -= Time.deltaTime;
@@ -536,6 +562,8 @@ public class EnemyAI : MonoBehaviour
     }
     private void Chasing()
     {
+        anim = GetComponent<Animator>();
+        rigid2D = GetComponent<Rigidbody2D>();
         if (attackTimer > 0)
             return;
         anim.SetBool("SeMueve", true);
@@ -748,6 +776,104 @@ public class EnemyAI : MonoBehaviour
                                 break;
                             }
                     }
+                }
+                break;
+            case ENEMY_TYPE.NIG:
+                anim.SetBool("SeMueve", false);
+
+                if (!animating)
+                {
+                    if (dir.x < 0 && Mathf.Abs(dir.x) >= Mathf.Abs(dir.y))
+                    {
+                        attackDirection = Direction.LEFT;
+                        anim.SetInteger("LD", 4);
+                        anim.SetFloat("LastX", -1);
+                        anim.SetFloat("LastY", 0);
+                    }
+                    else if (dir.x > 0 && Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+                    {
+                        attackDirection = Direction.RIGHT;
+                        anim.SetInteger("LD", 2);
+                        anim.SetFloat("LastX", 1);
+                        anim.SetFloat("LastY", 0);
+                    }
+                    else if (dir.y > 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
+                    {
+                        attackDirection = Direction.UP;
+                        anim.SetInteger("LD", 1);
+                        anim.SetFloat("LastX", 0);
+                        anim.SetFloat("LastY", 1);
+                    }
+                    else if (dir.y < 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
+                    {
+                        attackDirection = Direction.DOWN;
+                        anim.SetInteger("LD", 3);
+                        anim.SetFloat("LastX", 0);
+                        anim.SetFloat("LastY", -1);
+                    }
+                }
+                if (attackTimer <= 0)
+                {
+                    anim.SetBool("Slashing", true);
+                    animTimer = enemy.animDuration;
+                    animating = true;
+                    attackTimer = enemy.conjuringCD;
+                }
+                if (animTimer <= 0 && animating)
+                {
+                    animating = false;
+                    float dx = 0;
+                    float dy = 0;
+                    switch (attackDirection)
+                    {
+                        case Direction.DOWN:
+                            dy = -2*stopDistance;
+                            dx = 0;
+                            break;
+                        case Direction.LEFT:
+                            dy = 0;
+                            dx = -2*stopDistance;
+                            break;
+                        case Direction.RIGHT:
+                            dy = 0;
+                            dx = 2*stopDistance;
+                            break;
+                        case Direction.UP:
+                            dy = 2*stopDistance;
+                            dx = 0;
+                            break;
+                    }
+                    bool found = false;
+                    if (GameObject.Find("Conjured_1").GetComponent<EnemyClass>().dead && !found)
+                    {
+                        GameObject.Find("Conjured_1").transform.position = transform.position + new Vector3(dx, dy, 0);
+                        GameObject.Find("Conjured_1").GetComponent<EnemyClass>().dead = false;
+                        found = true;
+                    }
+                    if (GameObject.Find("Conjured_2").GetComponent<EnemyClass>().dead && !found)
+                    {
+                        GameObject.Find("Conjured_2").transform.position = transform.position + new Vector3(dx, dy, 0);
+                        GameObject.Find("Conjured_2").GetComponent<EnemyClass>().dead = false;
+                        found = true;
+                    }
+                    if (GameObject.Find("Conjured_3").GetComponent<EnemyClass>().dead && !found)
+                    {
+                        GameObject.Find("Conjured_3").transform.position = transform.position + new Vector3(dx, dy, 0);
+                        GameObject.Find("Conjured_3").GetComponent<EnemyClass>().dead = false;
+                        found = true;
+                    }
+                    if (GameObject.Find("Conjured_4").GetComponent<EnemyClass>().dead && !found)
+                    {
+                        GameObject.Find("Conjured_4").transform.position = transform.position + new Vector3(dx, dy, 0);
+                        GameObject.Find("Conjured_4").GetComponent<EnemyClass>().dead = false;
+                        found = true;
+                    }
+                    if (GameObject.Find("Conjured_5").GetComponent<EnemyClass>().dead && !found)
+                    {
+                        GameObject.Find("Conjured_5").transform.position = transform.position + new Vector3(dx, dy, 0);
+                        GameObject.Find("Conjured_5").GetComponent<EnemyClass>().dead = false;
+                        found = true;
+                    }                
                 }
                 break;
             case ENEMY_TYPE.CON:

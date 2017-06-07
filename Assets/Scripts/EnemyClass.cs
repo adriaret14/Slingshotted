@@ -7,10 +7,10 @@ public enum ENEMY_TYPE { SKT, ZMB, NIG, SPR, CON, BDK };
 public class EnemyClass : MonoBehaviour {
 
     //Tipo de enemigo
-    public ENEMY_TYPE tipo;
+    public ENEMY_TYPE tipo = ENEMY_TYPE.NIG;
     //Vida del enemigo
-    public float healthPoints;
-    public float maxHealth;
+    public float healthPoints = 100f;
+    public float maxHealth = 100f;
 
     //daño melee del enemigo
     public float damageMelee;
@@ -65,6 +65,10 @@ public class EnemyClass : MonoBehaviour {
     //Vector unitario vertical
     private Vector2 vertical;
 
+    public float animDuration = 0.0f;
+
+    public bool dead = false;
+
     [HideInInspector]
     public bool fallenFlag = false;
     // Use this for initialization
@@ -109,6 +113,8 @@ public class EnemyClass : MonoBehaviour {
                 rangedAttackCD = -1.0f;
                 conjuringCD = -1.0f;
 
+                animDuration = 0.8f;
+
                 healthRegen = 10f;
                 regenWaitCD = 3f;
                 regenTimer = 0f;
@@ -148,7 +154,9 @@ public class EnemyClass : MonoBehaviour {
 
                 attackCD = 0.0f;
                 rangedAttackCD = -1.0f;
-                conjuringCD = 0.0f;
+                conjuringCD = 2.5f;
+
+                animDuration = 0.7f;
 
                 healthRegen = 10f;
                 regenWaitCD = 3f;
@@ -181,6 +189,8 @@ public class EnemyClass : MonoBehaviour {
                 maxHealth = 50f;
                 healthPoints = 50f;
                 damageMelee = 7f;
+
+                dead = true;
 
                 roamingSpeed = 0.112f;
                 speed = 0.03f;
@@ -222,9 +232,9 @@ public class EnemyClass : MonoBehaviour {
         }
         if (healthPoints > maxHealth)
         {
-            healthPoints = 100f;
+            healthPoints = maxHealth;
         }
-        if (healthPoints == 0)
+        if (healthPoints == 0 && tipo != ENEMY_TYPE.CON)
         {
             jugador = GameObject.Find("Jugador").GetComponent<PlayerClass>();
             deathOrbChance = deathOrbMinChance + (deathOrbMaxChance - deathOrbMinChance) * (jugador.healthPoints / jugador.maxHealthPoints);
@@ -260,6 +270,12 @@ public class EnemyClass : MonoBehaviour {
             }
             GameObject.Find("FinalGate").GetComponent<GateClass>().deadCount++;
             Destroy(gameObject);
+        }
+        else if ( healthPoints == 0 )
+        {
+            healthPoints = maxHealth;
+            transform.position = transform.position - new Vector3(1000, 1000, 0);
+            dead = true;
         }
         if (regenTimer > 0)
         {
