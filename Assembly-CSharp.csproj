@@ -138,16 +138,26 @@
      <Compile Include="Assets\Scripts\EnemyAI.cs" />
      <Compile Include="Assets\Scripts\EnemyClass.cs" />
      <Compile Include="Assets\Scripts\GameOvere.cs" />
+     <Compile Include="Assets\Scripts\GameOvere2.cs" />
+     <Compile Include="Assets\Scripts\GameOvere3.cs" />
      <Compile Include="Assets\Scripts\GateClass.cs" />
      <Compile Include="Assets\Scripts\InventoryManager.cs" />
      <Compile Include="Assets\Scripts\InventorySlot.cs" />
      <Compile Include="Assets\Scripts\ItemClass.cs" />
      <Compile Include="Assets\Scripts\LvlControl.cs" />
+     <Compile Include="Assets\Scripts\MainMenuScripts.cs" />
      <Compile Include="Assets\Scripts\OrbClass.cs" />
+     <Compile Include="Assets\Scripts\Pause1.cs" />
+     <Compile Include="Assets\Scripts\Pause2.cs" />
+     <Compile Include="Assets\Scripts\Pause3.cs" />
      <Compile Include="Assets\Scripts\PlayerClass.cs" />
      <Compile Include="Assets\Scripts\PosicionMinimapa.cs" />
+     <Compile Include="Assets\Scripts\PosicionMinimapa2.cs" />
+     <Compile Include="Assets\Scripts\PosicionMinimapa3.cs" />
      <Compile Include="Assets\Scripts\PushAreaClass.cs" />
      <Compile Include="Assets\Scripts\PushToBackgroundClass.cs" />
+     <Compile Include="Assets\Scripts\SpikesClass.cs" />
+     <Compile Include="Assets\Scripts\TriggerZoneClass.cs" />
      <None Include="Assets\AstarPathfindingProject\Editor\EditorAssets\Materials\Navmesh.shader" />
      <None Include="Assets\AstarPathfindingProject\Plugins\DotNetZip\DotNetZipLicense.txt" />
      <None Include="Assets\AstarPathfindingProject\ExampleScenes\Materials\Projector Multiply.shader" />
@@ -178,7 +188,7 @@
  <HintPath>G:/GAME DEVELOPMENT/Unity/Editor/Data/UnityExtensions/Unity/UnityVR/RuntimeEditor/UnityEngine.VR.dll</HintPath>
  </Reference>
  <Reference Include="Pathfinding.Ionic.Zip.Reduced">
- <HintPath>D:/ADRIÀ/Slingshotted/Slingshotted/Assets/AstarPathfindingProject/Plugins/DotNetZip/Pathfinding.Ionic.Zip.Reduced.dll</HintPath>
+ <HintPath>G:/GAME DEVELOPMENT/PROYECTO VFINAL/Slingshotted/Assets/AstarPathfindingProject/Plugins/DotNetZip/Pathfinding.Ionic.Zip.Reduced.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

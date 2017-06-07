@@ -10,6 +10,7 @@ public class EnemyClass : MonoBehaviour {
     public ENEMY_TYPE tipo;
     //Vida del enemigo
     public float healthPoints;
+    public float maxHealth;
 
     //daño melee del enemigo
     public float damageMelee;
@@ -74,6 +75,7 @@ public class EnemyClass : MonoBehaviour {
         {
             case ENEMY_TYPE.SKT:
 
+                maxHealth = 115f;
                 healthPoints = 115f;
                 damageMelee = 12f;
                 damageRanged = 0f;
@@ -94,12 +96,13 @@ public class EnemyClass : MonoBehaviour {
 
             case ENEMY_TYPE.BDK:
 
-                healthPoints = 300f;
+                maxHealth = 500f;
+                healthPoints = 500f;
                 damageMelee = 55f;
                 damageRanged = 0f;
 
                 roamingSpeed = 0.00f;
-                speed = 30f;
+                speed = 35f;
                 fleeingSpeed = 0.00f;
 
                 attackCD = 5f;
@@ -114,6 +117,7 @@ public class EnemyClass : MonoBehaviour {
 
             case ENEMY_TYPE.ZMB:
 
+                maxHealth = 100f;
                 healthPoints = 100f;
                 damageMelee = 0f;
                 damageRanged = 60f;
@@ -134,6 +138,7 @@ public class EnemyClass : MonoBehaviour {
 
             case ENEMY_TYPE.NIG:
 
+                maxHealth = 90f;
                 healthPoints = 90f;
                 damageMelee = 12f;
 
@@ -153,6 +158,7 @@ public class EnemyClass : MonoBehaviour {
 
             case ENEMY_TYPE.SPR:
 
+                maxHealth = 150f;
                 healthPoints = 150f;
                 damageMelee = 15f;
 
@@ -172,6 +178,7 @@ public class EnemyClass : MonoBehaviour {
 
             case ENEMY_TYPE.CON:
 
+                maxHealth = 50f;
                 healthPoints = 50f;
                 damageMelee = 7f;
 
@@ -213,7 +220,7 @@ public class EnemyClass : MonoBehaviour {
             }
             
         }
-        if (healthPoints > 100f)
+        if (healthPoints > maxHealth)
         {
             healthPoints = 100f;
         }

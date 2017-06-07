@@ -120,6 +120,7 @@ public class EnemyAI : MonoBehaviour
 
     private float animTimer;
     private float animCD = 0.8f;
+    private bool animating = false;
 
     void Start()
     {
@@ -226,7 +227,7 @@ public class EnemyAI : MonoBehaviour
                 {
                     state = EnemyState.CHASING;
                 }
-                else if (distanceToTarget <= stopDistance)
+                else if (distanceToTarget <= 2.1*stopDistance)
                 {
                     state = EnemyState.ATTACKING;
                 }
@@ -682,63 +683,71 @@ public class EnemyAI : MonoBehaviour
                 attackArea.size = attackReduced;
                 attackArea.offset = attackOrigin;
 
-                if (dir.x < 0 && Mathf.Abs(dir.x) >= Mathf.Abs(dir.y))
+                if (!animating)
                 {
-                    attackDirection = Direction.LEFT;
-                    anim.SetInteger("LD", 4);
-                    anim.SetFloat("LastX", -1);
-                    anim.SetFloat("LastY", 0);
-                }
-                else if (dir.x > 0 && Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
-                {
-                    attackDirection = Direction.RIGHT;
-                    anim.SetInteger("LD", 2);
-                    anim.SetFloat("LastX", 1);
-                    anim.SetFloat("LastY", 0);
-                }
-                else if (dir.y > 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
-                {
-                    attackDirection = Direction.UP;
-                    anim.SetInteger("LD", 1);
-                    anim.SetFloat("LastX", 0);
-                    anim.SetFloat("LastY", 1);
-                }
-                else if (dir.y < 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
-                {
-                    attackDirection = Direction.DOWN;
-                    anim.SetInteger("LD", 3);
-                    anim.SetFloat("LastX", 0);
-                    anim.SetFloat("LastY", -1);
+                    if (dir.x < 0 && Mathf.Abs(dir.x) >= Mathf.Abs(dir.y))
+                    {
+                        attackDirection = Direction.LEFT;
+                        anim.SetInteger("LD", 4);
+                        anim.SetFloat("LastX", -1);
+                        anim.SetFloat("LastY", 0);
+                    }
+                    else if (dir.x > 0 && Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+                    {
+                        attackDirection = Direction.RIGHT;
+                        anim.SetInteger("LD", 2);
+                        anim.SetFloat("LastX", 1);
+                        anim.SetFloat("LastY", 0);
+                    }
+                    else if (dir.y > 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
+                    {
+                        attackDirection = Direction.UP;
+                        anim.SetInteger("LD", 1);
+                        anim.SetFloat("LastX", 0);
+                        anim.SetFloat("LastY", 1);
+                    }
+                    else if (dir.y < 0 && Mathf.Abs(dir.y) > Mathf.Abs(dir.x))
+                    {
+                        attackDirection = Direction.DOWN;
+                        anim.SetInteger("LD", 3);
+                        anim.SetFloat("LastX", 0);
+                        anim.SetFloat("LastY", -1);
+                    }
                 }
                 if (attackTimer <= 0)
                 {
                     anim.SetBool("Slashing", true);
                     animTimer = animCD;
-                    attackArea.size = attackSize;
+                    animating = true;                   
+                    attackTimer = attackCD;
+                }
+                if (animTimer <= 0 && animating)
+                {
+                    animating = false;
+                    attackArea.size = 1.5f*attackSize;
                     switch (attackDirection)
                     {
                         case Direction.LEFT:
                             {
-                                attackArea.offset += new Vector2(-2*stopDistance, 0);
+                                attackArea.offset += new Vector2(-stopDistance, 0);
                                 break;
                             }
                         case Direction.RIGHT:
                             {
-                                attackArea.offset += new Vector2(2*stopDistance, 0);
+                                attackArea.offset += new Vector2(stopDistance, 0);
                                 break;
                             }
                         case Direction.UP:
                             {
-                                attackArea.offset += new Vector2(0, 2*stopDistance);
+                                attackArea.offset += new Vector2(0, stopDistance);
                                 break;
                             }
                         case Direction.DOWN:
                             {
-                                attackArea.offset += new Vector2(0, -2*stopDistance);
+                                attackArea.offset += new Vector2(0, -stopDistance);
                                 break;
                             }
                     }
-                    attackTimer = attackCD;
                 }
                 break;
             case ENEMY_TYPE.CON:
