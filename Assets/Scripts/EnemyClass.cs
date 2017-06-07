@@ -207,6 +207,7 @@ public class EnemyClass : MonoBehaviour {
                 break;
 
         }
+        roamingSpeed = 0.0f;
     }
 	
 	// Update is called once per frame

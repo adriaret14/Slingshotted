@@ -16,6 +16,8 @@ public class SpikesClass : MonoBehaviour {
     private float highTimer;
     private float lowTimer;
 
+    public float passed = 0;
+
     private int State = 0;
     private int prevState = 0;
 	// Use this for initialization
@@ -51,12 +53,12 @@ public class SpikesClass : MonoBehaviour {
             if (State == 1)
             {
                 dmgCollider.SetActive(false);
-                lowTimer = lowCD;
+                lowTimer = lowCD - passed;
             }
             else
             {
                 dmgCollider.SetActive(true);
-                highTimer = highCD;
+                highTimer = highCD - passed;
             }
             
         }

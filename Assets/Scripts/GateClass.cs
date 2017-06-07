@@ -42,17 +42,21 @@ public class GateClass : MonoBehaviour {
             Destroy(gameObject);
         }
 
-        anim.SetInteger("Fase", fase);
+        if (anim != null) anim.SetInteger("Fase", fase);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         GameObject A = GameObject.Find("Jugador/attackArea");
         GameObject P = GameObject.Find("Jugador");
-        if (other.gameObject == A && P.GetComponent<InventoryManager>().isInInventory(Item.KEY) && fase == 2)
+        if (other.gameObject == A && P.GetComponent<InventoryManager>().isInInventory(Item.KEY) && (anim != null && fase == 2) || other.gameObject == A && P.GetComponent<InventoryManager>().isInInventory(Item.KEY) && anim == null)
         {
             P.GetComponent<InventoryManager>().deleteFromInventory(Item.KEY);
-            fase = 3;
+            if (anim != null) fase = 3;
+            else
+            {
+                Destroy(gameObject);
+            }
         }
     }
 }
