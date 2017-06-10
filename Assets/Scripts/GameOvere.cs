@@ -35,6 +35,11 @@ public class GameOvere : MonoBehaviour {
         SceneManager.LoadScene("Map2");
     }
 
+    public void GoToLvl3()
+    {
+        SceneManager.LoadScene("Map3");
+    }
+
     public void RestartScene()
     {
         SceneManager.LoadScene("Map1");

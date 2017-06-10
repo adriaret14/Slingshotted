@@ -35,7 +35,7 @@ public class GameOvere3 : MonoBehaviour
 
     public void GoToLvl2()
     {
-        SceneManager.LoadScene("Map4");
+        SceneManager.LoadScene("Main Menu");
     }
 
     public void RestartScene()
